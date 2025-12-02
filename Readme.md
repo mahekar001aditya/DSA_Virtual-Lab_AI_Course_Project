@@ -2,15 +2,17 @@
 
 Here's a table showing the different screens and features of the DSA Visual Lab application:
 
-| Image | Description | Features Shown | Technologies Used |
-|-------|-------------|----------------|-------------------|
-| ![Control Panel](imgg/2wbt.png) | **Algorithm Control Panel** | Complete visualization interface with algorithm controls, complexity analysis, code view, variable tracking, step-by-step execution, and detailed explanations | HTML5, CSS3, JavaScript, Real-time DOM manipulation, Syntax highlighting |
-| ![Topics Overview](imgg/3wbt.png) | **Topics Overview** | All DSA topics organized by difficulty (Beginner/Intermediate/Advanced) including Arrays, Linked Lists, Stacks & Queues, Trees with estimated learning times | HTML5, CSS Grid/Flexbox, JavaScript for interactive UI components |
-| ![Homepage](imgg/4wbt.png) | **Homepage** | Main landing page with call-to-action buttons (Start Visualizer, Browse Topics, Open Code Editor) and recent progress tracking | HTML5, CSS3, JavaScript, Responsive design principles |
-| ![Code Editor](imgg/5wbt.png) | **Code Editor** | Interactive coding environment with example algorithms (Bubble Sort shown), template selection, run/save/clear functionality, and output console | HTML5, CSS3, JavaScript, Code execution sandbox, Console simulation |
-| ![Quiz Interface](imgg/6wbt.png) | **Assessment/Quiz Interface** | DSA assessment section with topic-based quizzes (Arrays, Sorting Algorithms, Linked Lists, Trees), difficulty levels, and previous scores | HTML5, CSS3, JavaScript, Local Storage for score tracking |
-| ![Dashboard](imgg/7wbt.png) | **Learning Progress Dashboard** | User progress tracking showing quizzes taken, topics completed, time spent, achievements, and recent activity | HTML5, CSS3, JavaScript, Local Storage API, Progress tracking logic |
-| ![Enhanced Homepage](imgg/8wbt.png) | **Enhanced Homepage** | Updated homepage with improved recent progress tracking showing last activity timestamp | HTML5, CSS3, JavaScript, Time formatting utilities |
+## Table of Images
+
+| Title | Image |
+|-------|-------|
+| **Algorithm Control Panel** | ![Control Panel](imgg/2wbt.png) |
+| **Topics Overview** | ![Topics Overview](imgg/3wbt.png) |
+| **Homepage** | ![Homepage](imgg/4wbt.png) |
+| **Code Editor** | ![Code Editor](imgg/5wbt.png) |
+| **Assessment/Quiz Interface** | ![Quiz Interface](imgg/6wbt.png) |
+| **Learning Progress Dashboard** | ![Dashboard](imgg/7wbt.png) |
+| **Enhanced Homepage** | ![Enhanced Homepage](imgg/8wbt.png) |
 
 ---
 
