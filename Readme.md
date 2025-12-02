@@ -4,7 +4,7 @@ Here's a table showing the different screens and features of the DSA Visual Lab 
 
 | Image | Description | Features Shown | Technologies Used |
 |-------|-------------|----------------|-------------------|
-| ![Bubble Sort](.imgg/1wbt.png) | **Bubble Sort Visualization** | Interactive sorting visualization with array elements (11, 23, 24, 86, etc.), control buttons (Start, Reset, Pause), and speed controls | HTML5, CSS3, Vanilla JavaScript, Canvas API for visual elements |
+| ![Bubble Sort](imgg/1wbt.png) | **Bubble Sort Visualization** | Interactive sorting visualization with array elements (11, 23, 24, 86, etc.), control buttons (Start, Reset, Pause), and speed controls | HTML5, CSS3, Vanilla JavaScript, Canvas API for visual elements |
 | ![Control Panel](.imgg/2wbt.png) | **Algorithm Control Panel** | Complete visualization interface with algorithm controls, complexity analysis, code view, variable tracking, step-by-step execution, and detailed explanations | HTML5, CSS3, JavaScript, Real-time DOM manipulation, Syntax highlighting |
 | ![Topics Overview](.imgg/3wbt.png) | **Topics Overview** | All DSA topics organized by difficulty (Beginner/Intermediate/Advanced) including Arrays, Linked Lists, Stacks & Queues, Trees with estimated learning times | HTML5, CSS Grid/Flexbox, JavaScript for interactive UI components |
 | ![Homepage](.imgg/4wbt.png) | **Homepage** | Main landing page with call-to-action buttons (Start Visualizer, Browse Topics, Open Code Editor) and recent progress tracking | HTML5, CSS3, JavaScript, Responsive design principles |
