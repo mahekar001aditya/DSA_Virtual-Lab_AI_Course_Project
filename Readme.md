@@ -18,25 +18,25 @@ Here's a table showing the different screens and features of the DSA Visual Lab 
 
 ## Detailed Descriptions
 
-### ![Control Panel](imgg/2wbt.png) - Algorithm Control Panel
+### **Algorithm Control Panel**
 A comprehensive interface for algorithm visualization featuring real-time complexity analysis, side-by-side code view with highlighting, variable state tracking, and step-by-step execution controls. This is the main educational tool for understanding algorithm behavior.
 
-### ![Topics Overview](imgg/3wbt.png) - Topics Overview
+### **Topics Overview**
 The learning catalog that organizes DSA topics by difficulty level. Each topic card shows subtopics, estimated learning time, and quick access to visualization and quiz features.
 
-### ![Homepage](imgg/4wbt.png) - Homepage
+### **Homepage**
 The main entry point of the application with primary navigation options and a brief overview of recent user activity. Designed to be clean and inviting for new users.
 
-### ![Code Editor](imgg/5wbt.png) - Code Editor
+### **Code Editor**
 An interactive coding workspace where users can write, run, and test their own DSA implementations. Includes template algorithms, real-time output console, and visual feedback for code execution.
 
-### ![Quiz Interface](imgg/6wbt.png) - Assessment Interface
+### **Assessment Interface**
 The quiz/testing section where users can evaluate their knowledge on specific DSA topics. Tracks previous scores and provides targeted practice based on performance.
 
-### ![Dashboard](imgg/7wbt.png) - Progress Dashboard
+### **Progress Dashboard**
 A personalized dashboard showing learning statistics, achievements, recent activities, and overall progress. Helps users track their learning journey and stay motivated.
 
-### ![Enhanced Homepage](imgg/8wbt.png) - Enhanced Homepage
+### **Enhanced Homepage**
 An updated version of the homepage with more detailed progress tracking, showing precise timestamps of recent activities and improved user engagement features.
 
 ---
