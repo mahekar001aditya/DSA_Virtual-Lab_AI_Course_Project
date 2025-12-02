@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress - DSA Visual Lab</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div>
+                        <div class="logo-text">DSA Visual Lab</div>
+                        <div class="logo-subtext">Learn • Visualize • Debug</div>
+                    </div>
+                </div>
+                
+                <nav class="nav-links">
+                    <a href="../index.html" class="nav-link">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <a href="topics.html" class="nav-link">
+                        <i class="fas fa-book-open"></i> Topics
+                    </a>
+                    <a href="visualizer.html?topic=sorting" class="nav-link">
+                        <i class="fas fa-play-circle"></i> Visualizer
+                    </a>
+                    <a href="code-editor.html" class="nav-link">
+                        <i class="fas fa-code"></i> Code Editor
+                    </a>
+                    <a href="quiz.html" class="nav-link">
+                        <i class="fas fa-question-circle"></i> Quiz
+                    </a>
+                    <a href="progress.html" class="nav-link active">
+                        <i class="fas fa-chart-line"></i> Progress
+                    </a>
+                </nav>
+                
+                <div class="header-actions">
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="section">
+        <div class="container">
+            <div class="progress-header">
+                <h1>Your Learning Progress</h1>
+                <p>Track your journey through Data Structures and Algorithms</p>
+            </div>
+            
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="profile-info">
+                        <h2>DSA Learner</h2>
+                        <p class="profile-email">learning@dsavisual.lab</p>
+                        <p class="profile-join">Joined recently</p>
+                    </div>
+                    <button class="btn btn-outline" id="exportDataBtn">
+                        <i class="fas fa-download"></i> Export Data
+                    </button>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="color: var(--primary-color);">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div class="stat-value" id="topicsCompleted">0</div>
+                    <div class="stat-label">Topics Completed</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="color: var(--success-color);">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-value" id="quizzesTaken">0</div>
+                    <div class="stat-label">Quizzes Taken</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="color: var(--warning-color);">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-value" id="timeSpent">0</div>
+                    <div class="stat-label">Minutes Spent</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="color: var(--accent-color);">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-value" id="avgScore">0%</div>
+                    <div class="stat-label">Average Score</div>
+                </div>
+            </div>
+            
+            <div class="progress-sections">
+                <!-- Recent Activity -->
+                <div class="progress-section">
+                    <h2>Recent Activity</h2>
+                    <div class="activity-list" id="activityList">
+                        <!-- Activities will be loaded here -->
+                    </div>
+                </div>
+                
+                <!-- Quiz Scores -->
+                <div class="progress-section">
+                    <h2>Quiz Scores</h2>
+                    <div class="scores-chart">
+                        <canvas id="scoresChart" width="400" height="200"></canvas>
+                    </div>
+                    <div class="scores-table" id="scoresTable">
+                        <!-- Scores will be loaded here -->
+                    </div>
+                </div>
+                
+                <!-- Completed Topics -->
+                <div class="progress-section">
+                    <h2>Completed Topics</h2>
+                    <div class="topics-progress" id="topicsProgress">
+                        <!-- Topic progress will be loaded here -->
+                    </div>
+                </div>
+                
+                <!-- Achievements -->
+                <div class="progress-section">
+                    <h2>Achievements</h2>
+                    <div class="achievements-grid" id="achievementsGrid">
+                        <!-- Achievements will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="progress-actions">
+                <button class="btn btn-outline" id="clearDataBtn">
+                    <i class="fas fa-trash"></i> Clear All Data
+                </button>
+                <button class="btn btn-primary" id="continueLearningBtn">
+                    <i class="fas fa-play"></i> Continue Learning
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="../modules/data-storage.js" type="module"></script>
+    <script type="module">
+        import { DataStorage } from '../modules/data-storage.js';
+        
+        class ProgressApp {
+            constructor() {
+                this.storage = new DataStorage();
+                this.init();
+            }
+            
+            init() {
+                this.setupTheme();
+                this.setupEventListeners();
+                this.loadProgressData();
+            }
+            
+            setupTheme() {
+                const themeToggle = document.getElementById('themeToggle');
+                const currentTheme = this.storage.getPreference('theme') || 'light';
+                
+                document.documentElement.setAttribute('data-theme', currentTheme);
+                
+                themeToggle.innerHTML = currentTheme === 'dark' 
+                    ? '<i class="fas fa-sun"></i>' 
+                    : '<i class="fas fa-moon"></i>';
+                
+                themeToggle.addEventListener('click', () => {
+                    const currentTheme = document.documentElement.getAttribute('data-theme');
+                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                    
+                    document.documentElement.setAttribute('data-theme', newTheme);
+                    themeToggle.innerHTML = newTheme === 'dark' 
+                        ? '<i class="fas fa-sun"></i>' 
+                        : '<i class="fas fa-moon"></i>';
+                    
+                    this.storage.setPreference('theme', newTheme);
+                });
+            }
+            
+            setupEventListeners() {
+                // Export data button
+                document.getElementById('exportDataBtn').addEventListener('click', () => {
+                    this.exportData();
+                });
+                
+                // Clear data button
+                document.getElementById('clearDataBtn').addEventListener('click', () => {
+                    this.clearData();
+                });
+                
+                // Continue learning button
+                document.getElementById('continueLearningBtn').addEventListener('click', () => {
+                    window.location.href = 'topics.html';
+                });
+            }
+            
+            loadProgressData() {
+                const progress = this.storage.getProgress();
+                const scores = this.storage.getQuizScores();
+                
+                // Update stats
+                this.updateStats(progress, scores);
+                
+                // Load recent activity
+                this.loadRecentActivity(progress);
+                
+                // Load quiz scores
+                this.loadQuizScores(scores);
+                
+                // Load completed topics
+                this.loadCompletedTopics(progress);
+                
+                // Load achievements
+                this.loadAchievements(progress, scores);
+            }
+            
+            updateStats(progress, scores) {
+                // Topics completed
+                document.getElementById('topicsCompleted').textContent = 
+                    progress.completedTopics.length;
+                
+                // Quizzes taken
+                const quizCount = Object.keys(scores).length;
+                document.getElementById('quizzesTaken').textContent = quizCount;
+                
+                // Time spent (in minutes)
+                const timeSpent = Math.round(progress.totalTimeSpent);
+                document.getElementById('timeSpent').textContent = timeSpent;
+                
+                // Average score
+                let totalScore = 0;
+                let totalQuizzes = 0;
+                
+                Object.values(scores).forEach(score => {
+                    totalScore += score.percentage;
+                    totalQuizzes++;
+                });
+                
+                const avgScore = totalQuizzes > 0 ? Math.round(totalScore / totalQuizzes) : 0;
+                document.getElementById('avgScore').textContent = `${avgScore}%`;
+            }
+            
+            loadRecentActivity(progress) {
+                const activityList = document.getElementById('activityList');
+                
+                // Create activities array
+                const activities = [];
+                
+                // Add recent activity if exists
+                if (progress.recentActivity) {
+                    activities.push({
+                        type: 'visualization',
+                        title: `Viewed ${progress.recentActivity.topic}`,
+                        description: progress.recentActivity.details?.action || 'Visualized algorithm',
+                        time: this.formatTimeAgo(progress.recentActivity.timestamp),
+                        icon: 'fas fa-play-circle',
+                        color: 'var(--primary-color)'
+                    });
+                }
+                
+                // Add quiz activities from scores
+                const scores = this.storage.getQuizScores();
+                Object.entries(scores).forEach(([topic, score]) => {
+                    activities.push({
+                        type: 'quiz',
+                        title: `Completed ${topic} quiz`,
+                        description: `Score: ${score.percentage}%`,
+                        time: this.formatTimeAgo(score.timestamp),
+                        icon: 'fas fa-question-circle',
+                        color: 'var(--success-color)'
+                    });
+                });
+                
+                // Sort by timestamp (newest first)
+                activities.sort((a, b) => new Date(b.time) - new Date(a.time));
+                
+                // Display activities (limit to 5)
+                if (activities.length === 0) {
+                    activityList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-history"></i>
+                            <p>No recent activity yet. Start learning!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                activityList.innerHTML = activities.slice(0, 5).map(activity => `
+                    <div class="activity-item">
+                        <div class="activity-icon" style="background-color: ${activity.color}20; color: ${activity.color};">
+                            <i class="${activity.icon}"></i>
+                        </div>
+                        <div class="activity-content">
+                            <h4>${activity.title}</h4>
+                            <p>${activity.description}</p>
+                            <span class="activity-time">${activity.time}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            loadQuizScores(scores) {
+                const scoresTable = document.getElementById('scoresTable');
+                
+                if (Object.keys(scores).length === 0) {
+                    scoresTable.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-chart-bar"></i>
+                            <p>No quiz scores yet. Take a quiz to see your progress!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Create chart data
+                const topics = Object.keys(scores);
+                const percentages = topics.map(topic => scores[topic].percentage);
+                
+                // Create table
+                scoresTable.innerHTML = `
+                    <table class="scores-table">
+                        <thead>
+                            <tr>
+                                <th>Topic</th>
+                                <th>Score</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${Object.entries(scores).map(([topic, score]) => `
+                                <tr>
+                                    <td>${this.formatTopicName(topic)}</td>
+                                    <td>
+                                        <span class="score-badge score-${this.getScoreCategory(score.percentage)}">
+                                            ${score.percentage}%
+                                        </span>
+                                    </td>
+                                    <td>${this.formatDate(score.timestamp)}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline retry-quiz-btn" data-topic="${topic}">
+                                            <i class="fas fa-redo"></i> Retry
+                                        </button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+                
+                // Add event listeners to retry buttons
+                document.querySelectorAll('.retry-quiz-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const topic = e.target.closest('button').dataset.topic;
+                        window.location.href = `quiz.html?topic=${topic}`;
+                    });
+                });
+                
+                // Create chart
+                this.createChart(topics, percentages);
+            }
+            
+            createChart(topics, percentages) {
+                const canvas = document.getElementById('scoresChart');
+                const ctx = canvas.getContext('2d');
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Chart dimensions
+                const padding = 40;
+                const chartWidth = canvas.width - 2 * padding;
+                const chartHeight = canvas.height - 2 * padding;
+                
+                // Find max value for scaling
+                const maxValue = Math.max(...percentages, 100);
+                
+                // Draw grid
+                ctx.strokeStyle = 'var(--border-color)';
+                ctx.lineWidth = 1;
+                
+                // Horizontal grid lines
+                const gridLines = 5;
+                for (let i = 0; i <= gridLines; i++) {
+                    const y = padding + (chartHeight * i / gridLines);
+                    ctx.beginPath();
+                    ctx.moveTo(padding, y);
+                    ctx.lineTo(canvas.width - padding, y);
+                    ctx.stroke();
+                    
+                    // Y-axis labels
+                    const value = maxValue - (maxValue * i / gridLines);
+                    ctx.fillStyle = 'var(--text-secondary)';
+                    ctx.font = '12px Inter';
+                    ctx.textAlign = 'right';
+                    ctx.fillText(Math.round(value) + '%', padding - 5, y + 4);
+                }
+                
+                // Draw bars
+                const barWidth = chartWidth / topics.length * 0.6;
+                const barSpacing = chartWidth / topics.length * 0.4;
+                
+                topics.forEach((topic, index) => {
+                    const x = padding + index * (barWidth + barSpacing) + barSpacing / 2;
+                    const barHeight = (percentages[index] / maxValue) * chartHeight;
+                    const y = padding + chartHeight - barHeight;
+                    
+                    // Bar color based on score
+                    let color;
+                    if (percentages[index] >= 80) color = 'var(--success-color)';
+                    else if (percentages[index] >= 60) color = 'var(--warning-color)';
+                    else color = 'var(--danger-color)';
+                    
+                    // Draw bar
+                    ctx.fillStyle = color;
+                    ctx.fillRect(x, y, barWidth, barHeight);
+                    
+                    // Draw bar outline
+                    ctx.strokeStyle = 'var(--border-color)';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(x, y, barWidth, barHeight);
+                    
+                    // Draw topic label
+                    ctx.fillStyle = 'var(--text-primary)';
+                    ctx.font = '10px Inter';
+                    ctx.textAlign = 'center';
+                    ctx.save();
+                    ctx.translate(x + barWidth / 2, canvas.height - padding + 20);
+                    ctx.rotate(-Math.PI / 4);
+                    ctx.fillText(this.formatTopicName(topic), 0, 0);
+                    ctx.restore();
+                    
+                    // Draw percentage on top of bar
+                    ctx.fillStyle = 'var(--text-primary)';
+                    ctx.font = 'bold 11px Inter';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(`${percentages[index]}%`, x + barWidth / 2, y - 5);
+                });
+                
+                // Draw X and Y axes
+                ctx.strokeStyle = 'var(--text-primary)';
+                ctx.lineWidth = 2;
+                
+                // Y axis
+                ctx.beginPath();
+                ctx.moveTo(padding, padding);
+                ctx.lineTo(padding, canvas.height - padding);
+                ctx.stroke();
+                
+                // X axis
+                ctx.beginPath();
+                ctx.moveTo(padding, canvas.height - padding);
+                ctx.lineTo(canvas.width - padding, canvas.height - padding);
+                ctx.stroke();
+            }
+            
+            loadCompletedTopics(progress) {
+                const topicsProgress = document.getElementById('topicsProgress');
+                const topics = [
+                    { id: 'arrays', name: 'Arrays', icon: 'fas fa-list-ol' },
+                    { id: 'linked-lists', name: 'Linked Lists', icon: 'fas fa-link' },
+                    { id: 'stacks-queues', name: 'Stacks & Queues', icon: 'fas fa-layer-group' },
+                    { id: 'trees', name: 'Trees', icon: 'fas fa-project-diagram' },
+                    { id: 'heaps', name: 'Heaps', icon: 'fas fa-sitemap' },
+                    { id: 'graphs', name: 'Graphs', icon: 'fas fa-network-wired' },
+                    { id: 'hashing', name: 'Hash Tables', icon: 'fas fa-key' },
+                    { id: 'sorting', name: 'Sorting', icon: 'fas fa-sort-amount-down' },
+                    { id: 'searching', name: 'Searching', icon: 'fas fa-search' }
+                ];
+                
+                if (progress.completedTopics.length === 0) {
+                    topicsProgress.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-book"></i>
+                            <p>No topics completed yet. Start exploring!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                topicsProgress.innerHTML = `
+                    <div class="topics-list">
+                        ${topics.map(topic => {
+                            const isCompleted = progress.completedTopics.includes(topic.id);
+                            return `
+                                <div class="topic-progress-item ${isCompleted ? 'completed' : ''}">
+                                    <div class="topic-progress-icon">
+                                        <i class="${topic.icon}"></i>
+                                    </div>
+                                    <div class="topic-progress-content">
+                                        <h4>${topic.name}</h4>
+                                        <div class="progress-bar-sm">
+                                            <div class="progress-fill-sm" style="width: ${isCompleted ? '100' : '0'}%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="topic-progress-status">
+                                        ${isCompleted ? 
+                                            '<i class="fas fa-check-circle" style="color: var(--success-color);"></i>' : 
+                                            '<i class="far fa-circle" style="color: var(--text-tertiary);"></i>'
+                                        }
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            }
+            
+            loadAchievements(progress, scores) {
+                const achievementsGrid = document.getElementById('achievementsGrid');
+                const achievements = this.calculateAchievements(progress, scores);
+                
+                if (achievements.length === 0) {
+                    achievementsGrid.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-trophy"></i>
+                            <p>No achievements yet. Keep learning to earn achievements!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                achievementsGrid.innerHTML = achievements.map(achievement => `
+                    <div class="achievement-card ${achievement.earned ? 'earned' : 'locked'}">
+                        <div class="achievement-icon">
+                            <i class="${achievement.icon}"></i>
+                        </div>
+                        <div class="achievement-content">
+                            <h4>${achievement.title}</h4>
+                            <p>${achievement.description}</p>
+                        </div>
+                        <div class="achievement-status">
+                            ${achievement.earned ? 
+                                '<i class="fas fa-unlock" style="color: var(--success-color);"></i>' : 
+                                '<i class="fas fa-lock" style="color: var(--text-tertiary);"></i>'
+                            }
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            calculateAchievements(progress, scores) {
+                const achievements = [
+                    {
+                        id: 'first_visualization',
+                        title: 'First Visualization',
+                        description: 'Complete your first algorithm visualization',
+                        icon: 'fas fa-play-circle',
+                        earned: progress.completedTopics.length > 0
+                    },
+                    {
+                        id: 'quiz_master',
+                        title: 'Quiz Master',
+                        description: 'Score 80% or higher on any quiz',
+                        icon: 'fas fa-graduation-cap',
+                        earned: Object.values(scores).some(score => score.percentage >= 80)
+                    },
+                    {
+                        id: 'persistent_learner',
+                        title: 'Persistent Learner',
+                        description: 'Spend 30 minutes learning',
+                        icon: 'fas fa-clock',
+                        earned: progress.totalTimeSpent >= 30
+                    },
+                    {
+                        id: 'topic_explorer',
+                        title: 'Topic Explorer',
+                        description: 'Complete 3 different topics',
+                        icon: 'fas fa-compass',
+                        earned: progress.completedTopics.length >= 3
+                    },
+                    {
+                        id: 'code_writer',
+                        title: 'Code Writer',
+                        description: 'Write and execute code in the editor',
+                        icon: 'fas fa-code',
+                        earned: this.storage.getCodeSnippets().length > 0
+                    }
+                ];
+                
+                return achievements;
+            }
+            
+            formatTimeAgo(timestamp) {
+                const now = new Date();
+                const past = new Date(timestamp);
+                const diffMs = now - past;
+                const diffMins = Math.floor(diffMs / (1000 * 60));
+                const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+                const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                
+                if (diffMins < 1) return 'Just now';
+                if (diffMins < 60) return `${diffMins}m ago`;
+                if (diffHours < 24) return `${diffHours}h ago`;
+                if (diffDays < 7) return `${diffDays}d ago`;
+                return past.toLocaleDateString();
+            }
+            
+            formatDate(timestamp) {
+                const date = new Date(timestamp);
+                return date.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+            }
+            
+            formatTopicName(topicId) {
+                const names = {
+                    'arrays': 'Arrays',
+                    'linked-lists': 'Linked Lists',
+                    'stacks-queues': 'Stacks & Queues',
+                    'trees': 'Trees',
+                    'heaps': 'Heaps',
+                    'graphs': 'Graphs',
+                    'hashing': 'Hash Tables',
+                    'sorting': 'Sorting',
+                    'searching': 'Searching'
+                };
+                return names[topicId] || topicId;
+            }
+            
+            getScoreCategory(percentage) {
+                if (percentage >= 80) return 'excellent';
+                if (percentage >= 60) return 'good';
+                if (percentage >= 40) return 'average';
+                return 'poor';
+            }
+            
+            exportData() {
+                const data = this.storage.exportData();
+                const blob = new Blob([data], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'dsa-visual-lab-progress.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                alert('Progress data exported successfully!');
+            }
+            
+            clearData() {
+                if (confirm('Are you sure you want to clear all your progress data? This cannot be undone.')) {
+                    this.storage.clearAllData();
+                    alert('All progress data has been cleared.');
+                    this.loadProgressData();
+                }
+            }
+        }
+        
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            window.progressApp = new ProgressApp();
+        });
+    </script>
+    
+    <style>
+        .progress-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .progress-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-header p {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+        }
+        
+        .profile-card {
+            background-color: var(--bg-color);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+        
+        .profile-info {
+            flex: 1;
+        }
+        
+        .profile-info h2 {
+            margin: 0 0 0.25rem 0;
+        }
+        
+        .profile-email {
+            color: var(--text-secondary);
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .profile-join {
+            color: var(--text-tertiary);
+            font-size: 0.875rem;
+            margin: 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .stat-card {
+            background-color: var(--bg-color);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        .progress-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .progress-section {
+            background-color: var(--bg-color);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+        }
+        
+        .progress-section h2 {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            font-size: 1.25rem;
+        }
+        
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            background-color: var(--bg-secondary);
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-content h4 {
+            margin: 0 0 0.25rem 0;
+            font-size: 0.875rem;
+        }
+        
+        .activity-content p {
+            margin: 0 0 0.25rem 0;
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+        }
+        
+        .activity-time {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+        }
+        
+        .scores-chart {
+            margin-bottom: 1.5rem;
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+        }
+        
+        .scores-chart canvas {
+            width: 100%;
+            height: 200px;
+        }
+        
+        .scores-table {
+            overflow-x: auto;
+        }
+        
+        .scores-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .scores-table th {
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 2px solid var(--border-color);
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        
+        .scores-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.875rem;
+        }
+        
+        .score-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .score-excellent {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+        
+        .score-good {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+        
+        .score-average {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .score-poor {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .topics-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .topic-progress-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            border-radius: var(--radius-md);
+            background-color: var(--bg-secondary);
+        }
+        
+        .topic-progress-item.completed {
+            background-color: rgba(16, 185, 129, 0.1);
+        }
+        
+        .topic-progress-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            background-color: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+        }
+        
+        .topic-progress-content {
+            flex: 1;
+        }
+        
+        .topic-progress-content h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 0.875rem;
+        }
+        
+        .progress-bar-sm {
+            height: 6px;
+            background-color: var(--bg-tertiary);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill-sm {
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+        
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .achievement-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            background-color: var(--bg-secondary);
+            opacity: 0.6;
+        }
+        
+        .achievement-card.earned {
+            opacity: 1;
+            background-color: rgba(16, 185, 129, 0.1);
+        }
+        
+        .achievement-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            background-color: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+        }
+        
+        .achievement-card.earned .achievement-icon {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .achievement-content {
+            flex: 1;
+        }
+        
+        .achievement-content h4 {
+            margin: 0 0 0.25rem 0;
+            font-size: 0.875rem;
+        }
+        
+        .achievement-content p {
+            margin: 0;
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+        }
+        
+        .progress-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-tertiary);
+        }
+        
+        .empty-state i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .progress-sections {
+                grid-template-columns: 1fr;
+            }
+            
+            .progress-actions {
+                flex-direction: column;
+            }
+            
+            .progress-actions .btn {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .achievements-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</body>
+</html>

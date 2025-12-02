@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSA Visualizer - DSA Visual Lab</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div>
+                        <div class="logo-text">DSA Visual Lab</div>
+                        <div class="logo-subtext">Learn • Visualize • Debug</div>
+                    </div>
+                </div>
+                
+                <nav class="nav-links">
+                    <a href="../index.html" class="nav-link">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <a href="topics.html" class="nav-link">
+                        <i class="fas fa-book-open"></i> Topics
+                    </a>
+                    <a href="visualizer.html?topic=sorting" class="nav-link active">
+                        <i class="fas fa-play-circle"></i> Visualizer
+                    </a>
+                    <a href="code-editor.html" class="nav-link">
+                        <i class="fas fa-code"></i> Code Editor
+                    </a>
+                    <a href="quiz.html" class="nav-link">
+                        <i class="fas fa-question-circle"></i> Quiz
+                    </a>
+                    <a href="progress.html" class="nav-link">
+                        <i class="fas fa-chart-line"></i> Progress
+                    </a>
+                </nav>
+                
+                <div class="header-actions">
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="visualizer-container">
+        <!-- Left Sidebar -->
+        <div class="visualizer-sidebar">
+            <div class="sidebar-section">
+                <h3>Algorithm Controls</h3>
+                <div class="algorithm-selector">
+                    <select id="algorithmSelect" class="select-input">
+                        <option value="bubbleSort">Bubble Sort</option>
+                        <option value="selectionSort">Selection Sort</option>
+                        <option value="insertionSort">Insertion Sort</option>
+                        <option value="mergeSort">Merge Sort</option>
+                        <option value="quickSort">Quick Sort</option>
+                        <option value="linearSearch">Linear Search</option>
+                        <option value="binarySearch">Binary Search</option>
+                    </select>
+                </div>
+                
+                <div class="input-controls">
+                    <h4>Array Input</h4>
+                    <div class="input-group">
+                        <input type="text" id="arrayInput" class="text-input" 
+                               placeholder="e.g., 5, 2, 8, 1, 9" value="5, 2, 8, 1, 9, 7, 3, 6, 4">
+                        <button class="btn btn-sm" id="randomizeBtn">
+                            <i class="fas fa-random"></i> Random
+                        </button>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Array Size:</label>
+                        <input type="range" id="sizeSlider" min="5" max="20" value="9" class="slider">
+                        <span id="sizeValue">9</span>
+                    </div>
+                    
+                    <div class="input-group" id="searchTargetGroup" style="display: none;">
+                        <label>Search Target:</label>
+                        <input type="number" id="searchTarget" class="number-input" value="7" min="1" max="100">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3>Complexity Analysis</h3>
+                <div class="complexity-box" id="complexityBox">
+                    <div class="complexity-item">
+                        <span class="complexity-label">Time Complexity:</span>
+                        <span class="complexity-value" id="timeComplexity">O(n²)</span>
+                    </div>
+                    <div class="complexity-item">
+                        <span class="complexity-label">Space Complexity:</span>
+                        <span class="complexity-value" id="spaceComplexity">O(1)</span>
+                    </div>
+                    <div class="complexity-item">
+                        <span class="complexity-label">Stable:</span>
+                        <span class="complexity-value" id="stability">Yes</span>
+                    </div>
+                </div>
+                
+                <div class="metrics-box">
+                    <h4>Current Metrics</h4>
+                    <div class="metrics-item">
+                        <span>Comparisons:</span>
+                        <span id="comparisonCount">0</span>
+                    </div>
+                    <div class="metrics-item">
+                        <span>Swaps:</span>
+                        <span id="swapCount">0</span>
+                    </div>
+                    <div class="metrics-item">
+                        <span>Steps:</span>
+                        <span id="stepCount">0/0</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3>Steps</h3>
+                <div class="steps-list" id="stepsList">
+                    <!-- Steps will be populated here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Visualization Area -->
+        <div class="visualizer-main">
+            <div class="visualizer-canvas-container">
+                <canvas id="visualizationCanvas"></canvas>
+            </div>
+            
+            <div class="visualizer-controls">
+                <div class="control-group">
+                    <button class="control-btn" id="playBtn" title="Play (Space)">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="control-btn" id="pauseBtn" title="Pause" style="display: none;">
+                        <i class="fas fa-pause"></i>
+                    </button>
+                    <button class="control-btn" id="stepBackBtn" title="Step Back (←)">
+                        <i class="fas fa-step-backward"></i>
+                    </button>
+                    <button class="control-btn" id="stepForwardBtn" title="Step Forward (→)">
+                        <i class="fas fa-step-forward"></i>
+                    </button>
+                    <button class="control-btn" id="resetBtn" title="Reset (R)">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                </div>
+                
+                <div class="control-group">
+                    <label>Speed:</label>
+                    <input type="range" id="speedSlider" min="0.25" max="2" step="0.25" value="1" class="slider">
+                    <span id="speedValue">1.0x</span>
+                </div>
+                
+                <div class="step-counter">
+                    Step: <span id="currentStep">0</span> / <span id="totalSteps">0</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Panel -->
+        <div class="visualizer-sidebar">
+            <div class="sidebar-section">
+                <h3>Code View</h3>
+                <div class="code-viewer" id="codeViewer">
+                    <pre><code id="algorithmCode">
+// Bubble Sort Algorithm
+function bubbleSort(arr) {
+    let n = arr.length;
+    for (let i = 0; i < n-1; i++) {
+        for (let j = 0; j < n-i-1; j++) {
+            if (arr[j] > arr[j+1]) {
+                // Swap arr[j] and arr[j+1]
+                let temp = arr[j];
+                arr[j] = arr[j+1];
+                arr[j+1] = temp;
+            }
+        }
+    }
+    return arr;
+}</code></pre>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3>Variables</h3>
+                <div class="variables-view" id="variablesView">
+                    <div class="variable-item">
+                        <span class="variable-name">i:</span>
+                        <span class="variable-value">0</span>
+                    </div>
+                    <div class="variable-item">
+                        <span class="variable-name">j:</span>
+                        <span class="variable-value">0</span>
+                    </div>
+                    <div class="variable-item">
+                        <span class="variable-name">n:</span>
+                        <span class="variable-value">9</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3>Explanation</h3>
+                <div class="explanation-box" id="explanationBox">
+                    <p>Initial array: [5, 2, 8, 1, 9, 7, 3, 6, 4]</p>
+                    <p>Click play to start visualization.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../modules/data-storage.js" type="module"></script>
+    <script src="../modules/algorithms.js" type="module"></script>
+    <script src="../modules/visual-core.js" type="module"></script>
+    <script type="module">
+        import { DataStorage } from '../modules/data-storage.js';
+        import { Algorithms } from '../modules/algorithms.js';
+        import { VisualCore } from '../modules/visual-core.js';
+        
+        class VisualizerApp {
+            constructor() {
+                this.storage = new DataStorage();
+                this.algorithms = new Algorithms();
+                this.visualizer = new VisualCore('visualizationCanvas');
+                this.currentAlgorithm = 'bubbleSort';
+                this.currentArray = [5, 2, 8, 1, 9, 7, 3, 6, 4];
+                this.currentTrace = [];
+                this.isPlaying = false;
+                
+                this.init();
+            }
+            
+            init() {
+                this.setupTheme();
+                this.setupEventListeners();
+                this.loadAlgorithm();
+                this.updateAlgorithmInfo();
+            }
+            
+            setupTheme() {
+                const themeToggle = document.getElementById('themeToggle');
+                const currentTheme = this.storage.getPreference('theme') || 'light';
+                
+                document.documentElement.setAttribute('data-theme', currentTheme);
+                
+                themeToggle.innerHTML = currentTheme === 'dark' 
+                    ? '<i class="fas fa-sun"></i>' 
+                    : '<i class="fas fa-moon"></i>';
+                
+                themeToggle.addEventListener('click', () => {
+                    const currentTheme = document.documentElement.getAttribute('data-theme');
+                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                    
+                    document.documentElement.setAttribute('data-theme', newTheme);
+                    themeToggle.innerHTML = newTheme === 'dark' 
+                        ? '<i class="fas fa-sun"></i>' 
+                        : '<i class="fas fa-moon"></i>';
+                    
+                    this.storage.setPreference('theme', newTheme);
+                });
+            }
+            
+            setupEventListeners() {
+                // Algorithm selection
+                document.getElementById('algorithmSelect').addEventListener('change', (e) => {
+                    this.currentAlgorithm = e.target.value;
+                    this.loadAlgorithm();
+                    this.updateAlgorithmInfo();
+                    this.toggleSearchInput();
+                });
+                
+                // Array input
+                document.getElementById('arrayInput').addEventListener('change', (e) => {
+                    this.parseArrayInput(e.target.value);
+                });
+                
+                // Randomize button
+                document.getElementById('randomizeBtn').addEventListener('click', () => {
+                    this.generateRandomArray();
+                });
+                
+                // Size slider
+                const sizeSlider = document.getElementById('sizeSlider');
+                const sizeValue = document.getElementById('sizeValue');
+                
+                sizeSlider.addEventListener('input', (e) => {
+                    sizeValue.textContent = e.target.value;
+                });
+                
+                sizeSlider.addEventListener('change', (e) => {
+                    this.generateRandomArray(parseInt(e.target.value));
+                });
+                
+                // Search target
+                document.getElementById('searchTarget').addEventListener('change', (e) => {
+                    this.loadAlgorithm();
+                });
+                
+                // Control buttons
+                document.getElementById('playBtn').addEventListener('click', () => {
+                    this.play();
+                });
+                
+                document.getElementById('pauseBtn').addEventListener('click', () => {
+                    this.pause();
+                });
+                
+                document.getElementById('stepBackBtn').addEventListener('click', () => {
+                    this.stepBack();
+                });
+                
+                document.getElementById('stepForwardBtn').addEventListener('click', () => {
+                    this.stepForward();
+                });
+                
+                document.getElementById('resetBtn').addEventListener('click', () => {
+                    this.reset();
+                });
+                
+                // Speed slider
+                const speedSlider = document.getElementById('speedSlider');
+                const speedValue = document.getElementById('speedValue');
+                
+                speedSlider.addEventListener('input', (e) => {
+                    const value = parseFloat(e.target.value);
+                    speedValue.textContent = `${value.toFixed(2)}x`;
+                    this.visualizer.setSpeed(value);
+                });
+                
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    switch(e.key) {
+                        case ' ':
+                            e.preventDefault();
+                            if (this.isPlaying) {
+                                this.pause();
+                            } else {
+                                this.play();
+                            }
+                            break;
+                        case 'ArrowLeft':
+                            this.stepBack();
+                            break;
+                        case 'ArrowRight':
+                            this.stepForward();
+                            break;
+                        case 'r':
+                        case 'R':
+                            this.reset();
+                            break;
+                    }
+                });
+            }
+            
+            toggleSearchInput() {
+                const searchGroup = document.getElementById('searchTargetGroup');
+                if (this.currentAlgorithm.includes('Search')) {
+                    searchGroup.style.display = 'block';
+                } else {
+                    searchGroup.style.display = 'none';
+                }
+            }
+            
+            parseArrayInput(input) {
+                try {
+                    const array = input.split(',')
+                        .map(item => parseInt(item.trim()))
+                        .filter(item => !isNaN(item));
+                    
+                    if (array.length > 0) {
+                        this.currentArray = array;
+                        this.loadAlgorithm();
+                        return true;
+                    }
+                } catch (error) {
+                    console.error('Error parsing array input:', error);
+                }
+                return false;
+            }
+            
+            generateRandomArray(size = null) {
+                if (!size) {
+                    size = parseInt(document.getElementById('sizeSlider').value);
+                }
+                
+                const array = this.algorithms.generateRandomArray(size, 1, 100);
+                this.currentArray = array;
+                document.getElementById('arrayInput').value = array.join(', ');
+                this.loadAlgorithm();
+            }
+            
+            loadAlgorithm() {
+                let trace = [];
+                
+                switch(this.currentAlgorithm) {
+                    case 'bubbleSort':
+                        trace = this.algorithms.bubbleSort(this.currentArray);
+                        break;
+                    case 'selectionSort':
+                        trace = this.algorithms.selectionSort(this.currentArray);
+                        break;
+                    case 'insertionSort':
+                        trace = this.algorithms.insertionSort(this.currentArray);
+                        break;
+                    case 'mergeSort':
+                        trace = this.algorithms.mergeSort(this.currentArray);
+                        break;
+                    case 'quickSort':
+                        trace = this.algorithms.quickSort(this.currentArray);
+                        break;
+                    case 'linearSearch':
+                        const target = parseInt(document.getElementById('searchTarget').value) || 7;
+                        trace = this.algorithms.linearSearch(this.currentArray, target);
+                        break;
+                    case 'binarySearch':
+                        // Sort array first for binary search
+                        const sortedArray = [...this.currentArray].sort((a, b) => a - b);
+                        const target2 = parseInt(document.getElementById('searchTarget').value) || 7;
+                        trace = this.algorithms.binarySearch(sortedArray, target2);
+                        break;
+                    default:
+                        trace = this.algorithms.bubbleSort(this.currentArray);
+                }
+                
+                this.currentTrace = trace;
+                this.visualizer.loadTrace(trace);
+                this.updateStepList();
+                this.updateControls();
+                this.updateCodeView();
+                
+                // Update progress
+                this.storage.updateProgress(this.currentAlgorithm, 'visualization', {
+                    timeSpent: 1
+                });
+            }
+            
+            updateAlgorithmInfo() {
+                const info = this.algorithms.getAlgorithmInfo(this.currentAlgorithm);
+                
+                document.getElementById('timeComplexity').textContent = 
+                    `Best: ${info.timeComplexity.best}, Avg: ${info.timeComplexity.average}, Worst: ${info.timeComplexity.worst}`;
+                
+                document.getElementById('spaceComplexity').textContent = info.spaceComplexity;
+                document.getElementById('stability').textContent = info.stable ? 'Yes' : 'No';
+                
+                // Update explanation
+                const explanationBox = document.getElementById('explanationBox');
+                explanationBox.innerHTML = `
+                    <h4>${info.name}</h4>
+                    <p>${info.description}</p>
+                `;
+            }
+            
+            updateStepList() {
+                const stepsList = document.getElementById('stepsList');
+                stepsList.innerHTML = '';
+                
+                this.currentTrace.forEach((step, index) => {
+                    const stepItem = document.createElement('div');
+                    stepItem.className = 'step-item';
+                    if (index === 0) stepItem.classList.add('active');
+                    
+                    stepItem.innerHTML = `
+                        <div class="step-number">${index + 1}</div>
+                        <div class="step-description">${step.description || 'Step ' + (index + 1)}</div>
+                    `;
+                    
+                    stepItem.addEventListener('click', () => {
+                        this.visualizer.goToStep(index);
+                        this.updateControls();
+                        
+                        // Update active step
+                        document.querySelectorAll('.step-item').forEach(item => {
+                            item.classList.remove('active');
+                        });
+                        stepItem.classList.add('active');
+                    });
+                    
+                    stepsList.appendChild(stepItem);
+                });
+            }
+            
+            updateControls() {
+                const currentStep = this.visualizer.currentStep;
+                const totalSteps = this.currentTrace.length;
+                
+                document.getElementById('currentStep').textContent = currentStep + 1;
+                document.getElementById('totalSteps').textContent = totalSteps;
+                document.getElementById('stepCount').textContent = `${currentStep + 1}/${totalSteps}`;
+                
+                // Update play/pause buttons
+                const playBtn = document.getElementById('playBtn');
+                const pauseBtn = document.getElementById('pauseBtn');
+                
+                if (this.isPlaying) {
+                    playBtn.style.display = 'none';
+                    pauseBtn.style.display = 'flex';
+                } else {
+                    playBtn.style.display = 'flex';
+                    pauseBtn.style.display = 'none';
+                }
+                
+                // Update metrics
+                const currentTraceStep = this.currentTrace[currentStep];
+                if (currentTraceStep.metrics) {
+                    document.getElementById('comparisonCount').textContent = 
+                        currentTraceStep.metrics.comparisons || 0;
+                    document.getElementById('swapCount').textContent = 
+                        currentTraceStep.metrics.swaps || 0;
+                }
+            }
+            
+            updateCodeView() {
+                const codeViewer = document.getElementById('algorithmCode');
+                let code = '';
+                
+                switch(this.currentAlgorithm) {
+                    case 'bubbleSort':
+                        code = `// Bubble Sort Algorithm
+function bubbleSort(arr) {
+    let n = arr.length;
+    for (let i = 0; i < n-1; i++) {
+        for (let j = 0; j < n-i-1; j++) {
+            if (arr[j] > arr[j+1]) {
+                // Swap arr[j] and arr[j+1]
+                let temp = arr[j];
+                arr[j] = arr[j+1];
+                arr[j+1] = temp;
+            }
+        }
+    }
+    return arr;
+}`;
+                        break;
+                    case 'selectionSort':
+                        code = `// Selection Sort Algorithm
+function selectionSort(arr) {
+    let n = arr.length;
+    for (let i = 0; i < n-1; i++) {
+        let minIdx = i;
+        for (let j = i+1; j < n; j++) {
+            if (arr[j] < arr[minIdx]) {
+                minIdx = j;
+            }
+        }
+        if (minIdx !== i) {
+            // Swap arr[i] and arr[minIdx]
+            let temp = arr[i];
+            arr[i] = arr[minIdx];
+            arr[minIdx] = temp;
+        }
+    }
+    return arr;
+}`;
+                        break;
+                    case 'insertionSort':
+                        code = `// Insertion Sort Algorithm
+function insertionSort(arr) {
+    let n = arr.length;
+    for (let i = 1; i < n; i++) {
+        let key = arr[i];
+        let j = i - 1;
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j = j - 1;
+        }
+        arr[j + 1] = key;
+    }
+    return arr;
+}`;
+                        break;
+                    case 'linearSearch':
+                        code = `// Linear Search Algorithm
+function linearSearch(arr, target) {
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i] === target) {
+            return i; // Found at index i
+        }
+    }
+    return -1; // Not found
+}`;
+                        break;
+                    case 'binarySearch':
+                        code = `// Binary Search Algorithm
+function binarySearch(arr, target) {
+    let left = 0;
+    let right = arr.length - 1;
+    
+    while (left <= right) {
+        let mid = Math.floor((left + right) / 2);
+        
+        if (arr[mid] === target) {
+            return mid; // Found at index mid
+        }
+        
+        if (arr[mid] < target) {
+            left = mid + 1; // Search in right half
+        } else {
+            right = mid - 1; // Search in left half
+        }
+    }
+    
+    return -1; // Not found
+}`;
+                        break;
+                    default:
+                        code = `// ${this.currentAlgorithm}`;
+                }
+                
+                codeViewer.textContent = code;
+            }
+            
+            play() {
+                this.isPlaying = true;
+                this.visualizer.play();
+                this.updateControls();
+            }
+            
+            pause() {
+                this.isPlaying = false;
+                this.visualizer.pause();
+                this.updateControls();
+            }
+            
+            stepForward() {
+                this.visualizer.stepForward();
+                this.updateControls();
+                
+                // Update active step in list
+                const stepItems = document.querySelectorAll('.step-item');
+                stepItems.forEach((item, index) => {
+                    item.classList.remove('active');
+                    if (index === this.visualizer.currentStep) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+            
+            stepBack() {
+                this.visualizer.stepBackward();
+                this.updateControls();
+                
+                // Update active step in list
+                const stepItems = document.querySelectorAll('.step-item');
+                stepItems.forEach((item, index) => {
+                    item.classList.remove('active');
+                    if (index === this.visualizer.currentStep) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+            
+            reset() {
+                this.isPlaying = false;
+                this.visualizer.reset();
+                this.updateControls();
+                
+                // Reset active step in list
+                document.querySelectorAll('.step-item').forEach((item, index) => {
+                    item.classList.remove('active');
+                    if (index === 0) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+        }
+        
+        // Initialize the visualizer when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            window.visualizerApp = new VisualizerApp();
+        });
+    </script>
+    
+    <style>
+        /* Visualizer specific styles */
+        .sidebar-section {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .sidebar-section:last-child {
+            border-bottom: none;
+        }
+        
+        .sidebar-section h3 {
+            font-size: 1.125rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .sidebar-section h4 {
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .select-input, .text-input, .number-input {
+            width: 100%;
+            padding: 0.625rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+        
+        .input-group {
+            margin-bottom: 1rem;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 0.375rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .input-group .btn-sm {
+            margin-top: 0.5rem;
+        }
+        
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--bg-tertiary);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+        }
+        
+        .complexity-box, .metrics-box {
+            background-color: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .complexity-item, .metrics-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .complexity-item:last-child, .metrics-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .complexity-label, .metrics-item span:first-child {
+            color: var(--text-secondary);
+        }
+        
+        .complexity-value, .metrics-item span:last-child {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .steps-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 0.75rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid var(--border-color);
+        }
+        
+        .step-item:hover {
+            background-color: var(--bg-tertiary);
+        }
+        
+        .step-item.active {
+            background-color: rgba(37, 99, 235, 0.1);
+            border-color: var(--primary-color);
+        }
+        
+        .step-number {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 0.75rem;
+            flex-shrink: 0;
+        }
+        
+        .step-description {
+            font-size: 0.8125rem;
+            line-height: 1.4;
+            color: var(--text-primary);
+        }
+        
+        .code-viewer {
+            background-color: #1e1e1e;
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        
+        .code-viewer code {
+            color: #d4d4d4;
+            white-space: pre;
+        }
+        
+        .variables-view {
+            background-color: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+        }
+        
+        .variable-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+        }
+        
+        .variable-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .variable-name {
+            color: var(--text-secondary);
+        }
+        
+        .variable-value {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .explanation-box {
+            background-color: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+        
+        .explanation-box h4 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        
+        .explanation-box p {
+            margin-bottom: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .explanation-box p:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+</body>
+</html>

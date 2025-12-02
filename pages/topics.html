@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topics - DSA Visual Lab</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div>
+                        <div class="logo-text">DSA Visual Lab</div>
+                        <div class="logo-subtext">Learn • Visualize • Debug</div>
+                    </div>
+                </div>
+                
+                <nav class="nav-links">
+                    <a href="../index.html" class="nav-link">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <a href="topics.html" class="nav-link active">
+                        <i class="fas fa-book-open"></i> Topics
+                    </a>
+                    <a href="visualizer.html?topic=sorting" class="nav-link">
+                        <i class="fas fa-play-circle"></i> Visualizer
+                    </a>
+                    <a href="code-editor.html" class="nav-link">
+                        <i class="fas fa-code"></i> Code Editor
+                    </a>
+                    <a href="quiz.html" class="nav-link">
+                        <i class="fas fa-question-circle"></i> Quiz
+                    </a>
+                    <a href="progress.html" class="nav-link">
+                        <i class="fas fa-chart-line"></i> Progress
+                    </a>
+                </nav>
+                
+                <div class="header-actions">
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="section">
+        <div class="container">
+            <div class="section-header">
+                <h1 class="section-title">Data Structures & Algorithms Topics</h1>
+                <div class="search-box">
+                    <input type="text" placeholder="Search topics..." id="topicSearch">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+            
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <span class="filter-label">Difficulty:</span>
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="beginner">Beginner</button>
+                        <button class="filter-btn" data-filter="intermediate">Intermediate</button>
+                        <button class="filter-btn" data-filter="advanced">Advanced</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="topics-grid" id="topicsGrid">
+                <!-- Topics will be loaded dynamically -->
+            </div>
+        </div>
+    </main>
+
+    <script src="../modules/data-storage.js" type="module"></script>
+    <script type="module">
+        import { DataStorage } from '../modules/data-storage.js';
+        
+        class TopicsApp {
+            constructor() {
+                this.storage = new DataStorage();
+                this.topics = [];
+                this.filteredTopics = [];
+                this.currentFilter = 'all';
+                this.init();
+            }
+            
+            async init() {
+                this.setupTheme();
+                await this.loadTopics();
+                this.setupEventListeners();
+                this.renderTopics();
+            }
+            
+            setupTheme() {
+                const themeToggle = document.getElementById('themeToggle');
+                const currentTheme = this.storage.getPreference('theme') || 'light';
+                
+                document.documentElement.setAttribute('data-theme', currentTheme);
+                
+                themeToggle.innerHTML = currentTheme === 'dark' 
+                    ? '<i class="fas fa-sun"></i>' 
+                    : '<i class="fas fa-moon"></i>';
+                
+                themeToggle.addEventListener('click', () => {
+                    const currentTheme = document.documentElement.getAttribute('data-theme');
+                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                    
+                    document.documentElement.setAttribute('data-theme', newTheme);
+                    themeToggle.innerHTML = newTheme === 'dark' 
+                        ? '<i class="fas fa-sun"></i>' 
+                        : '<i class="fas fa-moon"></i>';
+                    
+                    this.storage.setPreference('theme', newTheme);
+                });
+            }
+            
+            async loadTopics() {
+                this.topics = [
+                    {
+                        id: 'arrays',
+                        title: 'Arrays',
+                        description: 'Learn about array operations, searching, and sorting algorithms with interactive visualizations.',
+                        icon: 'fas fa-list-ol',
+                        difficulty: 'beginner',
+                        time: '30 min',
+                        color: '#3b82f6',
+                        subtopics: ['Linear Search', 'Binary Search', 'Array Operations']
+                    },
+                    {
+                        id: 'linked-lists',
+                        title: 'Linked Lists',
+                        description: 'Visualize singly, doubly, and circular linked lists with operations like insert, delete, and reverse.',
+                        icon: 'fas fa-link',
+                        difficulty: 'intermediate',
+                        time: '45 min',
+                        color: '#8b5cf6',
+                        subtopics: ['Singly Linked', 'Doubly Linked', 'Circular Linked']
+                    },
+                    {
+                        id: 'stacks-queues',
+                        title: 'Stacks & Queues',
+                        description: 'Understand LIFO and FIFO principles with animated stack and queue operations.',
+                        icon: 'fas fa-layer-group',
+                        difficulty: 'beginner',
+                        time: '25 min',
+                        color: '#10b981',
+                        subtopics: ['Stack Operations', 'Queue Operations', 'Circular Queue']
+                    },
+                    {
+                        id: 'trees',
+                        title: 'Trees',
+                        description: 'Explore binary trees, BST, AVL trees, and tree traversal algorithms.',
+                        icon: 'fas fa-project-diagram',
+                        difficulty: 'intermediate',
+                        time: '60 min',
+                        color: '#f59e0b',
+                        subtopics: ['Binary Tree', 'BST', 'AVL Tree', 'Traversals']
+                    },
+                    {
+                        id: 'heaps',
+                        title: 'Heaps',
+                        description: 'Visualize min-heap and max-heap structures with heapify operations.',
+                        icon: 'fas fa-sitemap',
+                        difficulty: 'intermediate',
+                        time: '40 min',
+                        color: '#ef4444',
+                        subtopics: ['Min-Heap', 'Max-Heap', 'Heap Sort', 'Priority Queue']
+                    },
+                    {
+                        id: 'graphs',
+                        title: 'Graphs',
+                        description: 'Learn graph algorithms like BFS, DFS, Dijkstra with interactive node manipulation.',
+                        icon: 'fas fa-network-wired',
+                        difficulty: 'advanced',
+                        time: '75 min',
+                        color: '#ec4899',
+                        subtopics: ['BFS', 'DFS', 'Dijkstra', 'Minimum Spanning Tree']
+                    },
+                    {
+                        id: 'hashing',
+                        title: 'Hash Tables',
+                        description: 'Understand hash functions, collisions, and different resolution techniques.',
+                        icon: 'fas fa-key',
+                        difficulty: 'intermediate',
+                        time: '35 min',
+                        color: '#06b6d4',
+                        subtopics: ['Hash Functions', 'Collision Resolution', 'Chaining', 'Open Addressing']
+                    },
+                    {
+                        id: 'sorting',
+                        title: 'Sorting Algorithms',
+                        description: 'Compare and visualize various sorting algorithms with step-by-step execution.',
+                        icon: 'fas fa-sort-amount-down',
+                        difficulty: 'beginner',
+                        time: '50 min',
+                        color: '#84cc16',
+                        subtopics: ['Bubble Sort', 'Selection Sort', 'Insertion Sort', 'Merge Sort', 'Quick Sort']
+                    },
+                    {
+                        id: 'searching',
+                        title: 'Searching Algorithms',
+                        description: 'Visualize linear search, binary search, and other search techniques.',
+                        icon: 'fas fa-search',
+                        difficulty: 'beginner',
+                        time: '20 min',
+                        color: '#f97316',
+                        subtopics: ['Linear Search', 'Binary Search', 'Jump Search', 'Interpolation Search']
+                    }
+                ];
+                
+                this.filteredTopics = [...this.topics];
+            }
+            
+            setupEventListeners() {
+                // Search input
+                document.getElementById('topicSearch').addEventListener('input', (e) => {
+                    this.filterTopics(e.target.value);
+                });
+                
+                // Filter buttons
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const filter = e.target.dataset.filter;
+                        this.setFilter(filter);
+                    });
+                });
+            }
+            
+            setFilter(filter) {
+                this.currentFilter = filter;
+                
+                // Update active button
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.filter === filter) {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                this.filterTopics(document.getElementById('topicSearch').value);
+            }
+            
+            filterTopics(searchTerm = '') {
+                const term = searchTerm.toLowerCase();
+                
+                this.filteredTopics = this.topics.filter(topic => {
+                    // Apply difficulty filter
+                    if (this.currentFilter !== 'all' && topic.difficulty !== this.currentFilter) {
+                        return false;
+                    }
+                    
+                    // Apply search filter
+                    if (term) {
+                        const inTitle = topic.title.toLowerCase().includes(term);
+                        const inDesc = topic.description.toLowerCase().includes(term);
+                        const inSubtopics = topic.subtopics.some(sub => 
+                            sub.toLowerCase().includes(term)
+                        );
+                        return inTitle || inDesc || inSubtopics;
+                    }
+                    
+                    return true;
+                });
+                
+                this.renderTopics();
+            }
+            
+            renderTopics() {
+                const topicsGrid = document.getElementById('topicsGrid');
+                topicsGrid.innerHTML = '';
+                
+                this.filteredTopics.forEach(topic => {
+                    const topicCard = this.createTopicCard(topic);
+                    topicsGrid.appendChild(topicCard);
+                });
+                
+                if (this.filteredTopics.length === 0) {
+                    topicsGrid.innerHTML = `
+                        <div class="no-results">
+                            <i class="fas fa-search"></i>
+                            <h3>No topics found</h3>
+                            <p>Try adjusting your search or filter criteria.</p>
+                        </div>
+                    `;
+                }
+            }
+            
+            createTopicCard(topic) {
+                const card = document.createElement('div');
+                card.className = 'topic-card';
+                card.dataset.topicId = topic.id;
+                
+                card.innerHTML = `
+                    <div class="topic-icon" style="color: ${topic.color}">
+                        <i class="${topic.icon}"></i>
+                    </div>
+                    <h3 class="topic-title">${topic.title}</h3>
+                    <p class="topic-desc">${topic.description}</p>
+                    
+                    <div class="topic-subtopics">
+                        ${topic.subtopics.map(subtopic => 
+                            `<span class="subtopic-tag">${subtopic}</span>`
+                        ).join('')}
+                    </div>
+                    
+                    <div class="topic-meta">
+                        <span class="topic-difficulty difficulty-${topic.difficulty}">
+                            ${topic.difficulty.charAt(0).toUpperCase() + topic.difficulty.slice(1)}
+                        </span>
+                        <span class="topic-time">
+                            <i class="far fa-clock"></i> ${topic.time}
+                        </span>
+                    </div>
+                    
+                    <div class="topic-actions">
+                        <button class="btn btn-primary" onclick="window.location.href='visualizer.html?topic=${topic.id}'">
+                            <i class="fas fa-play"></i> Visualize
+                        </button>
+                        <button class="btn btn-outline" onclick="window.location.href='quiz.html?topic=${topic.id}'">
+                            <i class="fas fa-question-circle"></i> Quiz
+                        </button>
+                    </div>
+                `;
+                
+                return card;
+            }
+        }
+        
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            window.topicsApp = new TopicsApp();
+        });
+    </script>
+    
+    <style>
+        .filter-controls {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .filter-label {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 0.375rem 0.75rem;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 500;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+        
+        .filter-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .filter-btn.active {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+        
+        .topic-subtopics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.375rem;
+            margin-bottom: 1rem;
+        }
+        
+        .subtopic-tag {
+            padding: 0.25rem 0.5rem;
+            background-color: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .topic-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .topic-actions .btn {
+            flex: 1;
+            justify-content: center;
+        }
+        
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+        
+        .no-results i {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-tertiary);
+        }
+        
+        .no-results h3 {
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+    </style>
+</body>
+</html>

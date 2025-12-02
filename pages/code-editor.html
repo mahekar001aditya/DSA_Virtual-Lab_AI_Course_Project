@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Editor - DSA Visual Lab</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div>
+                        <div class="logo-text">DSA Visual Lab</div>
+                        <div class="logo-subtext">Learn • Visualize • Debug</div>
+                    </div>
+                </div>
+                
+                <nav class="nav-links">
+                    <a href="../index.html" class="nav-link">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <a href="topics.html" class="nav-link">
+                        <i class="fas fa-book-open"></i> Topics
+                    </a>
+                    <a href="visualizer.html?topic=sorting" class="nav-link">
+                        <i class="fas fa-play-circle"></i> Visualizer
+                    </a>
+                    <a href="code-editor.html" class="nav-link active">
+                        <i class="fas fa-code"></i> Code Editor
+                    </a>
+                    <a href="quiz.html" class="nav-link">
+                        <i class="fas fa-question-circle"></i> Quiz
+                    </a>
+                    <a href="progress.html" class="nav-link">
+                        <i class="fas fa-chart-line"></i> Progress
+                    </a>
+                </nav>
+                
+                <div class="header-actions">
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="code-editor-container">
+        <div class="editor-pane">
+            <div class="editor-header">
+                <h3>Code Editor</h3>
+                <div class="editor-actions">
+                    <select id="templateSelect" class="select-input-sm">
+                        <option value="">Select Template</option>
+                        <option value="bubbleSort">Bubble Sort</option>
+                        <option value="selectionSort">Selection Sort</option>
+                        <option value="linearSearch">Linear Search</option>
+                        <option value="binarySearch">Binary Search</option>
+                        <option value="linkedList">Linked List</option>
+                    </select>
+                    <button class="btn btn-primary" id="runBtn">
+                        <i class="fas fa-play"></i> Run Code
+                    </button>
+                    <button class="btn btn-outline" id="saveBtn">
+                        <i class="fas fa-save"></i> Save
+                    </button>
+                    <button class="btn btn-outline" id="clearBtn">
+                        <i class="fas fa-trash"></i> Clear
+                    </button>
+                </div>
+            </div>
+            <div class="editor">
+                <textarea id="codeEditor" spellcheck="false" placeholder="Write your DSA code here...">
+// Welcome to DSA Visual Lab Code Editor!
+// You can write algorithms and visualize them using the visual API
+
+// Example: Bubble Sort with visualization
+function bubbleSortVisual(arr) {
+    let n = arr.length;
+    console.log("Starting Bubble Sort...");
+    console.log("Original array:", [...arr]);
+    
+    for (let i = 0; i < n - 1; i++) {
+        console.log(`\nPass ${i + 1}:`);
+        for (let j = 0; j < n - i - 1; j++) {
+            // Visual comparison
+            console.log(`  Comparing arr[${j}]=${arr[j]} and arr[${j + 1}]=${arr[j + 1]}`);
+            
+            if (arr[j] > arr[j + 1]) {
+                // Visual swap
+                console.log(`  Swapping ${arr[j]} and ${arr[j + 1]}`);
+                
+                // Perform swap
+                let temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+                
+                console.log(`  Array after swap:`, [...arr]);
+            }
+        }
+        console.log(`  Element arr[${n - i - 1}]=${arr[n - i - 1]} is now in correct position`);
+    }
+    
+    console.log("\n✅ Sorting complete!");
+    return arr;
+}
+
+// Test the algorithm
+const testArray = [64, 34, 25, 12, 22, 11, 90];
+console.log("🚀 Running Bubble Sort Visualization...");
+const sortedArray = bubbleSortVisual(testArray);
+console.log("🎯 Final sorted array:", sortedArray);
+
+// Try implementing your own algorithms below!
+// Use console.log() for output visualization
+</textarea>
+            </div>
+        </div>
+        
+        <div class="output-pane">
+            <div class="output-header">
+                <h3>Output Console</h3>
+                <button class="btn btn-sm" id="clearOutputBtn">
+                    <i class="fas fa-trash"></i> Clear
+                </button>
+            </div>
+            <div class="output-content" id="outputConsole">
+                <div class="output-welcome">
+                    <h4>Welcome to the Code Editor!</h4>
+                    <p>Write your DSA algorithms in the left panel and click "Run Code" to execute them.</p>
+                    <p>Use <code>console.log()</code> to display output in this console.</p>
+                    <p>Example algorithms are available in the template dropdown.</p>
+                </div>
+            </div>
+            
+            <div class="visual-output" id="visualOutput">
+                <div class="output-header">
+                    <h3>Visual Output</h3>
+                </div>
+                <div class="visual-content">
+                    <canvas id="codeCanvas" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../modules/data-storage.js" type="module"></script>
+    <script src="../modules/code-sandbox.js" type="module"></script>
+    <script type="module">
+        import { DataStorage } from '../modules/data-storage.js';
+        import { CodeSandbox } from '../modules/code-sandbox.js';
+        
+        class CodeEditorApp {
+            constructor() {
+                this.storage = new DataStorage();
+                this.sandbox = new CodeSandbox();
+                this.editor = null;
+                this.currentCode = '';
+                this.init();
+            }
+            
+            init() {
+                this.setupTheme();
+                this.setupEditor();
+                this.setupEventListeners();
+                this.loadSavedCode();
+            }
+            
+            setupTheme() {
+                const themeToggle = document.getElementById('themeToggle');
+                const currentTheme = this.storage.getPreference('theme') || 'light';
+                
+                document.documentElement.setAttribute('data-theme', currentTheme);
+                
+                themeToggle.innerHTML = currentTheme === 'dark' 
+                    ? '<i class="fas fa-sun"></i>' 
+                    : '<i class="fas fa-moon"></i>';
+                
+                themeToggle.addEventListener('click', () => {
+                    const currentTheme = document.documentElement.getAttribute('data-theme');
+                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                    
+                    document.documentElement.setAttribute('data-theme', newTheme);
+                    themeToggle.innerHTML = newTheme === 'dark' 
+                        ? '<i class="fas fa-sun"></i>' 
+                        : '<i class="fas fa-moon"></i>';
+                    
+                    this.storage.setPreference('theme', newTheme);
+                });
+            }
+            
+            setupEditor() {
+                this.editor = document.getElementById('codeEditor');
+                
+                // Set initial height based on content
+                this.adjustEditorHeight();
+                
+                // Auto-expand textarea as user types
+                this.editor.addEventListener('input', () => {
+                    this.adjustEditorHeight();
+                    this.currentCode = this.editor.value;
+                });
+            }
+            
+            adjustEditorHeight() {
+                this.editor.style.height = 'auto';
+                this.editor.style.height = (this.editor.scrollHeight) + 'px';
+            }
+            
+            setupEventListeners() {
+                // Run button
+                document.getElementById('runBtn').addEventListener('click', () => {
+                    this.runCode();
+                });
+                
+                // Save button
+                document.getElementById('saveBtn').addEventListener('click', () => {
+                    this.saveCode();
+                });
+                
+                // Clear button
+                document.getElementById('clearBtn').addEventListener('click', () => {
+                    this.clearCode();
+                });
+                
+                // Clear output button
+                document.getElementById('clearOutputBtn').addEventListener('click', () => {
+                    this.clearOutput();
+                });
+                
+                // Template selector
+                document.getElementById('templateSelect').addEventListener('change', (e) => {
+                    this.loadTemplate(e.target.value);
+                });
+                
+                // Keyboard shortcut: Ctrl+Enter to run code
+                this.editor.addEventListener('keydown', (e) => {
+                    if (e.ctrlKey && e.key === 'Enter') {
+                        e.preventDefault();
+                        this.runCode();
+                    }
+                });
+            }
+            
+            loadSavedCode() {
+                const snippets = this.storage.getCodeSnippets();
+                if (snippets.length > 0) {
+                    const latest = snippets[snippets.length - 1];
+                    this.editor.value = latest.code;
+                    this.currentCode = latest.code;
+                    this.adjustEditorHeight();
+                }
+            }
+            
+            loadTemplate(templateName) {
+                let code = '';
+                
+                switch(templateName) {
+                    case 'bubbleSort':
+                        code = `// Bubble Sort Algorithm
+function bubbleSort(arr) {
+    let n = arr.length;
+    console.log("Starting Bubble Sort...");
+    console.log("Original array:", [...arr]);
+    
+    for (let i = 0; i < n - 1; i++) {
+        console.log(\`\\nPass \${i + 1}:\`);
+        for (let j = 0; j < n - i - 1; j++) {
+            console.log(\`  Comparing arr[\${j}]=\${arr[j]} and arr[\${j + 1}]=\${arr[j + 1]}\`);
+            
+            if (arr[j] > arr[j + 1]) {
+                console.log(\`  Swapping \${arr[j]} and \${arr[j + 1]}\`);
+                
+                // Swap elements
+                let temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+                
+                console.log(\`  Array after swap: [\${arr.join(', ')}]\`);
+            }
+        }
+        console.log(\`  Element arr[\${n - i - 1}]=\${arr[n - i - 1]} is now in correct position\`);
+    }
+    
+    console.log("\\n✅ Sorting complete!");
+    return arr;
+}
+
+// Test the algorithm
+const array = [64, 34, 25, 12, 22, 11, 90];
+console.log("🚀 Running Bubble Sort...");
+const sorted = bubbleSort(array);
+console.log("🎯 Final sorted array:", sorted);`;
+                        break;
+                        
+                    case 'selectionSort':
+                        code = `// Selection Sort Algorithm
+function selectionSort(arr) {
+    let n = arr.length;
+    console.log("Starting Selection Sort...");
+    console.log("Original array:", [...arr]);
+    
+    for (let i = 0; i < n - 1; i++) {
+        let minIdx = i;
+        console.log(\`\\nIteration \${i + 1}: Looking for minimum from position \${i}\`);
+        
+        for (let j = i + 1; j < n; j++) {
+            console.log(\`  Comparing arr[\${minIdx}]=\${arr[minIdx]} with arr[\${j}]=\${arr[j]}\`);
+            if (arr[j] < arr[minIdx]) {
+                minIdx = j;
+                console.log(\`  New minimum found at index \${minIdx}\`);
+            }
+        }
+        
+        if (minIdx !== i) {
+            console.log(\`  Swapping arr[\${i}]=\${arr[i]} with minimum arr[\${minIdx}]=\${arr[minIdx]}\`);
+            
+            // Swap elements
+            let temp = arr[i];
+            arr[i] = arr[minIdx];
+            arr[minIdx] = temp;
+            
+            console.log(\`  Array after swap: [\${arr.join(', ')}]\`);
+        }
+        
+        console.log(\`  Element arr[\${i}]=\${arr[i]} is now in correct position\`);
+    }
+    
+    console.log("\\n✅ Sorting complete!");
+    return arr;
+}
+
+// Test the algorithm
+const array = [64, 25, 12, 22, 11];
+console.log("🚀 Running Selection Sort...");
+const sorted = selectionSort(array);
+console.log("🎯 Final sorted array:", sorted);`;
+                        break;
+                        
+                    case 'linearSearch':
+                        code = `// Linear Search Algorithm
+function linearSearch(arr, target) {
+    console.log("Starting Linear Search...");
+    console.log("Array:", arr);
+    console.log("Target:", target);
+    
+    for (let i = 0; i < arr.length; i++) {
+        console.log(\`\\nChecking element at index \${i}: \${arr[i]}\`);
+        
+        if (arr[i] === target) {
+            console.log(\`✅ Found \${target} at index \${i}!\`);
+            return i;
+        }
+        
+        console.log(\`❌ \${arr[i]} is not equal to \${target}, moving to next element\`);
+    }
+    
+    console.log("\\n❌ Target not found in the array");
+    return -1;
+}
+
+// Test the algorithm
+const array = [10, 23, 45, 67, 89, 12, 34, 56];
+const target = 45;
+console.log("🚀 Running Linear Search...");
+const result = linearSearch(array, target);
+console.log("Result:", result);`;
+                        break;
+                        
+                    case 'binarySearch':
+                        code = `// Binary Search Algorithm (requires sorted array)
+function binarySearch(arr, target) {
+    console.log("Starting Binary Search...");
+    console.log("Sorted array:", arr);
+    console.log("Target:", target);
+    
+    let left = 0;
+    let right = arr.length - 1;
+    let steps = 0;
+    
+    while (left <= right) {
+        steps++;
+        let mid = Math.floor((left + right) / 2);
+        
+        console.log(\`\\nStep \${steps}:\`);
+        console.log(\`  Search range: [\${left}, \${right}]\`);
+        console.log(\`  Middle index: \${mid}, value: \${arr[mid]}\`);
+        
+        if (arr[mid] === target) {
+            console.log(\`✅ Found \${target} at index \${mid}!\`);
+            console.log(\`Total steps: \${steps}\`);
+            return mid;
+        }
+        
+        if (arr[mid] < target) {
+            console.log(\`  \${arr[mid]} < \${target}, searching in right half\`);
+            left = mid + 1;
+        } else {
+            console.log(\`  \${arr[mid]} > \${target}, searching in left half\`);
+            right = mid - 1;
+        }
+    }
+    
+    console.log("\\n❌ Target not found in the array");
+    console.log(\`Total steps: \${steps}\`);
+    return -1;
+}
+
+// Test the algorithm
+const sortedArray = [11, 12, 22, 25, 34, 64, 90];
+const target = 25;
+console.log("🚀 Running Binary Search...");
+const result = binarySearch(sortedArray, target);
+console.log("Result:", result);`;
+                        break;
+                        
+                    case 'linkedList':
+                        code = `// Linked List Implementation
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+class LinkedList {
+    constructor() {
+        this.head = null;
+        this.size = 0;
+    }
+    
+    // Add element at the end
+    append(value) {
+        const newNode = new Node(value);
+        
+        if (!this.head) {
+            this.head = newNode;
+            console.log(\`Added \${value} as head\`);
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+            console.log(\`Added \${value} at the end\`);
+        }
+        
+        this.size++;
+        this.print();
+    }
+    
+    // Add element at the beginning
+    prepend(value) {
+        const newNode = new Node(value);
+        newNode.next = this.head;
+        this.head = newNode;
+        this.size++;
+        console.log(\`Added \${value} at the beginning\`);
+        this.print();
+    }
+    
+    // Remove element by value
+    remove(value) {
+        if (!this.head) {
+            console.log("List is empty");
+            return;
+        }
+        
+        if (this.head.value === value) {
+            this.head = this.head.next;
+            this.size--;
+            console.log(\`Removed \${value} from head\`);
+            this.print();
+            return;
+        }
+        
+        let current = this.head;
+        while (current.next && current.next.value !== value) {
+            current = current.next;
+        }
+        
+        if (current.next) {
+            current.next = current.next.next;
+            this.size--;
+            console.log(\`Removed \${value}\`);
+            this.print();
+        } else {
+            console.log(\`Value \${value} not found\`);
+        }
+    }
+    
+    // Print the linked list
+    print() {
+        let current = this.head;
+        let result = [];
+        while (current) {
+            result.push(current.value);
+            current = current.next;
+        }
+        console.log(\`Linked List: \${result.join(' -> ')} -> null\`);
+        console.log(\`Size: \${this.size}\`);
+    }
+    
+    // Search for a value
+    search(value) {
+        let current = this.head;
+        let index = 0;
+        
+        while (current) {
+            console.log(\`Checking node at index \${index}: \${current.value}\`);
+            if (current.value === value) {
+                console.log(\`✅ Found \${value} at index \${index}\`);
+                return index;
+            }
+            current = current.next;
+            index++;
+        }
+        
+        console.log(\`❌ \${value} not found in the list\`);
+        return -1;
+    }
+}
+
+// Test the linked list
+console.log("🚀 Testing Linked List Operations");
+const list = new LinkedList();
+
+list.append(10);
+list.append(20);
+list.append(30);
+list.prepend(5);
+list.search(20);
+list.remove(10);
+list.search(25);`;
+                        break;
+                }
+                
+                if (code) {
+                    this.editor.value = code;
+                    this.currentCode = code;
+                    this.adjustEditorHeight();
+                    document.getElementById('templateSelect').value = '';
+                }
+            }
+            
+            runCode() {
+                const code = this.editor.value;
+                if (!code.trim()) {
+                    this.showOutput('Please write some code first!', 'error');
+                    return;
+                }
+                
+                // Clear previous output
+                this.clearOutput();
+                
+                // Show running indicator
+                this.showOutput('Running code...', 'info');
+                
+                try {
+                    // Use the sandbox to run code safely
+                    const result = this.sandbox.execute(code);
+                    
+                    // Display output
+                    const outputConsole = document.getElementById('outputConsole');
+                    outputConsole.innerHTML = result.output;
+                    
+                    // Scroll to bottom
+                    outputConsole.scrollTop = outputConsole.scrollHeight;
+                    
+                    // Update progress
+                    this.storage.updateProgress('code-editor', 'code_execution', {
+                        linesOfCode: code.split('\n').length
+                    });
+                    
+                } catch (error) {
+                    this.showOutput(`Error: ${error.message}`, 'error');
+                }
+            }
+            
+            showOutput(message, type = 'info') {
+                const outputConsole = document.getElementById('outputConsole');
+                const outputLine = document.createElement('div');
+                outputLine.className = `output-line ${type}`;
+                outputLine.textContent = message;
+                outputConsole.appendChild(outputLine);
+                outputConsole.scrollTop = outputConsole.scrollHeight;
+            }
+            
+            clearOutput() {
+                document.getElementById('outputConsole').innerHTML = `
+                    <div class="output-welcome">
+                        <h4>Output Console</h4>
+                        <p>Code output will appear here after execution.</p>
+                    </div>
+                `;
+            }
+            
+            saveCode() {
+                const code = this.editor.value;
+                const name = prompt('Enter a name for this code snippet:', 'My Algorithm');
+                
+                if (name) {
+                    this.storage.saveCodeSnippet({
+                        name: name,
+                        code: code,
+                        language: 'javascript'
+                    });
+                    
+                    alert('Code saved successfully!');
+                }
+            }
+            
+            clearCode() {
+                if (confirm('Are you sure you want to clear the editor?')) {
+                    this.editor.value = '';
+                    this.currentCode = '';
+                    this.adjustEditorHeight();
+                }
+            }
+        }
+        
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            window.codeEditorApp = new CodeEditorApp();
+        });
+    </script>
+    
+    <style>
+        .code-editor-container {
+            display: flex;
+            height: calc(100vh - 70px);
+        }
+        
+        .editor-pane {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-color);
+        }
+        
+        .editor-header {
+            padding: 1rem;
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .editor-header h3 {
+            margin: 0;
+        }
+        
+        .editor-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .select-input-sm {
+            padding: 0.375rem 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+        
+        .editor {
+            flex: 1;
+            background-color: #1e1e1e;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .editor textarea {
+            width: 100%;
+            height: 100%;
+            background-color: transparent;
+            color: #d4d4d4;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            border: none;
+            padding: 1rem;
+            resize: none;
+            outline: none;
+        }
+        
+        .output-pane {
+            width: 400px;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-secondary);
+        }
+        
+        .output-header {
+            padding: 1rem;
+            background-color: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .output-header h3 {
+            margin: 0;
+            font-size: 1rem;
+        }
+        
+        .output-content {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            background-color: var(--bg-color);
+        }
+        
+        .output-welcome {
+            padding: 1rem;
+            color: var(--text-secondary);
+        }
+        
+        .output-welcome h4 {
+            margin-top: 0;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+        
+        .output-welcome p {
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        .output-line {
+            margin-bottom: 0.5rem;
+            padding: 0.25rem 0;
+            border-bottom: 1px solid var(--border-color);
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        
+        .output-line.info {
+            color: var(--text-primary);
+        }
+        
+        .output-line.error {
+            color: var(--danger-color);
+        }
+        
+        .output-line.success {
+            color: var(--success-color);
+        }
+        
+        .visual-output {
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .visual-content {
+            padding: 1rem;
+            background-color: var(--bg-color);
+        }
+        
+        .visual-content canvas {
+            width: 100%;
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius-md);
+        }
+        
+        @media (max-width: 1024px) {
+            .code-editor-container {
+                flex-direction: column;
+            }
+            
+            .output-pane {
+                width: 100%;
+                height: 300px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .editor-actions {
+                justify-content: flex-end;
+            }
+            
+            .select-input-sm {
+                width: 150px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .editor-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .editor-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</body>
+</html>

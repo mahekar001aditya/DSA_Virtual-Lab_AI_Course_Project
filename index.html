@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSA Visual Lab — Learn, Visualize, Debug Algorithms</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div>
+                        <div class="logo-text">DSA Visual Lab</div>
+                        <div class="logo-subtext">Learn • Visualize • Debug</div>
+                    </div>
+                </div>
+                
+                <nav class="nav-links">
+                    <a href="index.html" class="nav-link active">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <a href="pages/topics.html" class="nav-link">
+                        <i class="fas fa-book-open"></i> Topics
+                    </a>
+                    <a href="pages/visualizer.html?topic=sorting" class="nav-link">
+                        <i class="fas fa-play-circle"></i> Visualizer
+                    </a>
+                    <a href="pages/code-editor.html" class="nav-link">
+                        <i class="fas fa-code"></i> Code Editor
+                    </a>
+                    <a href="pages/quiz.html" class="nav-link">
+                        <i class="fas fa-question-circle"></i> Quiz
+                    </a>
+                    <a href="pages/progress.html" class="nav-link">
+                        <i class="fas fa-chart-line"></i> Progress
+                    </a>
+                </nav>
+                
+                <div class="header-actions">
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="btn btn-outline" id="loginBtn">
+                        <i class="fas fa-user"></i> Sign In
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Master DSA with Interactive Visualizations</h1>
+                <p>Code, Trace, Understand. Explore data structures and algorithms through interactive visualizations, step-by-step tracing, and hands-on coding.</p>
+                <div class="hero-actions">
+                    <a href="pages/visualizer.html?topic=sorting" class="btn btn-primary">
+                        <i class="fas fa-play"></i> Start Visualizer
+                    </a>
+                    <a href="pages/topics.html" class="btn btn-outline">
+                        <i class="fas fa-book"></i> Browse Topics
+                    </a>
+                    <a href="pages/code-editor.html" class="btn btn-outline">
+                        <i class="fas fa-edit"></i> Open Code Editor
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Progress -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Recent Progress</h2>
+                <a href="pages/progress.html" class="btn btn-outline">View All</a>
+            </div>
+            <div class="progress-banner" id="progressBanner">
+                <div class="progress-content">
+                    <i class="fas fa-history"></i>
+                    <span>No recent activity yet. Start learning!</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Topics -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Featured Topics</h2>
+                <div class="search-box">
+                    <input type="text" placeholder="Search topics..." id="topicSearch">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+            
+            <div class="topics-grid" id="topicsGrid">
+                <!-- Topics will be loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="logo">
+                        <div class="logo-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div>
+                            <div class="logo-text">DSA Visual Lab</div>
+                        </div>
+                    </div>
+                    <p class="footer-desc">Interactive platform for learning Data Structures and Algorithms through visualization.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Topics</h3>
+                    <ul class="footer-links">
+                        <li><a href="pages/topics.html#arrays">Arrays</a></li>
+                        <li><a href="pages/topics.html#linked-lists">Linked Lists</a></li>
+                        <li><a href="pages/topics.html#trees">Trees</a></li>
+                        <li><a href="pages/topics.html#graphs">Graphs</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Tools</h3>
+                    <ul class="footer-links">
+                        <li><a href="pages/visualizer.html">Visualizer</a></li>
+                        <li><a href="pages/code-editor.html">Code Editor</a></li>
+                        <li><a href="pages/quiz.html">Assessment</a></li>
+                        <li><a href="pages/progress.html">Progress</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Connect</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-discord"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 DSA Visual Lab. All rights reserved.</p>
+                <p>Built with HTML, CSS, and JavaScript</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js" type="module"></script>
+    <script src="modules/data-storage.js" type="module"></script>
+</body>
+</html>

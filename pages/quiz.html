@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - DSA Visual Lab</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div>
+                        <div class="logo-text">DSA Visual Lab</div>
+                        <div class="logo-subtext">Learn • Visualize • Debug</div>
+                    </div>
+                </div>
+                
+                <nav class="nav-links">
+                    <a href="../index.html" class="nav-link">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <a href="topics.html" class="nav-link">
+                        <i class="fas fa-book-open"></i> Topics
+                    </a>
+                    <a href="visualizer.html?topic=sorting" class="nav-link">
+                        <i class="fas fa-play-circle"></i> Visualizer
+                    </a>
+                    <a href="code-editor.html" class="nav-link">
+                        <i class="fas fa-code"></i> Code Editor
+                    </a>
+                    <a href="quiz.html" class="nav-link active">
+                        <i class="fas fa-question-circle"></i> Quiz
+                    </a>
+                    <a href="progress.html" class="nav-link">
+                        <i class="fas fa-chart-line"></i> Progress
+                    </a>
+                </nav>
+                
+                <div class="header-actions">
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="section">
+        <div class="container">
+            <div class="quiz-header">
+                <h1>DSA Assessment</h1>
+                <p>Test your knowledge of Data Structures and Algorithms</p>
+            </div>
+            
+            <div class="quiz-selector">
+                <h2>Select Topic</h2>
+                <div class="topic-cards" id="topicCards">
+                    <!-- Topic cards will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="quiz-container hidden" id="quizContainer">
+                <div class="quiz-progress">
+                    <div class="progress-info">
+                        <span>Question <span id="currentQuestion">1</span> of <span id="totalQuestions">10</span></span>
+                        <span>Score: <span id="currentScore">0</span> points</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 10%"></div>
+                    </div>
+                </div>
+                
+                <div class="quiz-question" id="questionContainer">
+                    <!-- Question will be loaded here -->
+                </div>
+                
+                <div class="quiz-options" id="optionsContainer">
+                    <!-- Options will be loaded here -->
+                </div>
+                
+                <div class="quiz-feedback hidden" id="feedbackContainer">
+                    <!-- Feedback will be shown here -->
+                </div>
+                
+                <div class="quiz-navigation">
+                    <button class="btn btn-outline" id="prevBtn" disabled>
+                        <i class="fas fa-arrow-left"></i> Previous
+                    </button>
+                    <div class="navigation-center">
+                        <button class="btn btn-outline" id="hintBtn">
+                            <i class="fas fa-lightbulb"></i> Hint
+                        </button>
+                        <button class="btn btn-outline" id="explainBtn" disabled>
+                            <i class="fas fa-info-circle"></i> Explanation
+                        </button>
+                    </div>
+                    <button class="btn btn-primary" id="nextBtn">
+                        Next <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                
+                <div class="quiz-results hidden" id="resultsContainer">
+                    <!-- Results will be shown here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../modules/data-storage.js" type="module"></script>
+    <script type="module">
+        import { DataStorage } from '../modules/data-storage.js';
+        
+        class QuizApp {
+            constructor() {
+                this.storage = new DataStorage();
+                this.quizzes = this.getQuizzes();
+                this.currentQuiz = null;
+                this.currentQuestionIndex = 0;
+                this.score = 0;
+                this.userAnswers = [];
+                this.quizStarted = false;
+                
+                this.init();
+            }
+            
+            init() {
+                this.setupTheme();
+                this.setupEventListeners();
+                this.loadTopicCards();
+            }
+            
+            setupTheme() {
+                const themeToggle = document.getElementById('themeToggle');
+                const currentTheme = this.storage.getPreference('theme') || 'light';
+                
+                document.documentElement.setAttribute('data-theme', currentTheme);
+                
+                themeToggle.innerHTML = currentTheme === 'dark' 
+                    ? '<i class="fas fa-sun"></i>' 
+                    : '<i class="fas fa-moon"></i>';
+                
+                themeToggle.addEventListener('click', () => {
+                    const currentTheme = document.documentElement.getAttribute('data-theme');
+                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                    
+                    document.documentElement.setAttribute('data-theme', newTheme);
+                    themeToggle.innerHTML = newTheme === 'dark' 
+                        ? '<i class="fas fa-sun"></i>' 
+                        : '<i class="fas fa-moon"></i>';
+                    
+                    this.storage.setPreference('theme', newTheme);
+                });
+            }
+            
+            setupEventListeners() {
+                // Navigation buttons
+                document.getElementById('prevBtn').addEventListener('click', () => {
+                    this.prevQuestion();
+                });
+                
+                document.getElementById('nextBtn').addEventListener('click', () => {
+                    this.nextQuestion();
+                });
+                
+                // Hint and explanation buttons
+                document.getElementById('hintBtn').addEventListener('click', () => {
+                    this.showHint();
+                });
+                
+                document.getElementById('explainBtn').addEventListener('click', () => {
+                    this.showExplanation();
+                });
+            }
+            
+            getQuizzes() {
+                return {
+                    arrays: {
+                        title: "Arrays",
+                        description: "Test your knowledge of array operations and algorithms",
+                        icon: "fas fa-list-ol",
+                        color: "#3b82f6",
+                        difficulty: "beginner",
+                        questions: [
+                            {
+                                question: "What is the time complexity of accessing an element by index in an array?",
+                                options: [
+                                    "O(1)",
+                                    "O(log n)",
+                                    "O(n)",
+                                    "O(n²)"
+                                ],
+                                correct: 0,
+                                hint: "Arrays provide direct access to elements using their index.",
+                                explanation: "Array access by index is O(1) because the memory address can be calculated directly using: base_address + index * element_size."
+                            },
+                            {
+                                question: "Which of the following is NOT a valid array operation?",
+                                options: [
+                                    "Access by index",
+                                    "Insert at arbitrary position in O(1)",
+                                    "Search for an element",
+                                    "Update an element"
+                                ],
+                                correct: 1,
+                                hint: "Think about what happens when you insert in the middle of an array.",
+                                explanation: "Inserting at an arbitrary position requires shifting elements, which takes O(n) time in the worst case."
+                            },
+                            {
+                                question: "What is the worst-case time complexity of linear search?",
+                                options: [
+                                    "O(1)",
+                                    "O(log n)",
+                                    "O(n)",
+                                    "O(n log n)"
+                                ],
+                                correct: 2,
+                                hint: "Linear search examines each element one by one.",
+                                explanation: "In worst case, linear search needs to examine all n elements, making it O(n)."
+                            },
+                            {
+                                question: "Binary search requires the array to be:",
+                                options: [
+                                    "Sorted",
+                                    "Unsorted",
+                                    "Partially sorted",
+                                    "Reverse sorted"
+                                ],
+                                correct: 0,
+                                hint: "Binary search works by repeatedly dividing the search interval in half.",
+                                explanation: "Binary search requires the array to be sorted to work correctly, as it compares the target with the middle element to decide which half to search next."
+                            },
+                            {
+                                question: "What is the space complexity of most array sorting algorithms?",
+                                options: [
+                                    "O(1)",
+                                    "O(log n)",
+                                    "O(n)",
+                                    "O(n²)"
+                                ],
+                                correct: 2,
+                                hint: "Most in-place sorting algorithms don't require additional arrays.",
+                                explanation: "Many array sorting algorithms like Bubble Sort, Selection Sort, and Insertion Sort are in-place and have O(1) space complexity."
+                            }
+                        ]
+                    },
+                    
+                    sorting: {
+                        title: "Sorting Algorithms",
+                        description: "Test your knowledge of various sorting algorithms",
+                        icon: "fas fa-sort-amount-down",
+                        color: "#84cc16",
+                        difficulty: "beginner",
+                        questions: [
+                            {
+                                question: "Which sorting algorithm has the best worst-case time complexity?",
+                                options: [
+                                    "Bubble Sort",
+                                    "Selection Sort",
+                                    "Merge Sort",
+                                    "Quick Sort"
+                                ],
+                                correct: 2,
+                                hint: "Think about divide and conquer algorithms.",
+                                explanation: "Merge Sort has O(n log n) worst-case time complexity, which is the best among these options. Quick Sort has O(n²) worst case."
+                            },
+                            {
+                                question: "Which sorting algorithm is NOT stable?",
+                                options: [
+                                    "Bubble Sort",
+                                    "Insertion Sort",
+                                    "Selection Sort",
+                                    "Merge Sort"
+                                ],
+                                correct: 2,
+                                hint: "Stable sorting preserves the relative order of equal elements.",
+                                explanation: "Selection Sort is not stable because it may change the relative order of equal elements during swapping."
+                            },
+                            {
+                                question: "What is the average time complexity of Quick Sort?",
+                                options: [
+                                    "O(n)",
+                                    "O(n log n)",
+                                    "O(n²)",
+                                    "O(log n)"
+                                ],
+                                correct: 1,
+                                hint: "Quick Sort is a divide and conquer algorithm.",
+                                explanation: "Quick Sort has average time complexity of O(n log n), though its worst case is O(n²)."
+                            },
+                            {
+                                question: "Which sorting algorithm works by repeatedly selecting the minimum element?",
+                                options: [
+                                    "Bubble Sort",
+                                    "Selection Sort",
+                                    "Insertion Sort",
+                                    "Quick Sort"
+                                ],
+                                correct: 1,
+                                hint: "The name gives it away!",
+                                explanation: "Selection Sort repeatedly finds the minimum element from the unsorted part and puts it at the beginning."
+                            },
+                            {
+                                question: "In Bubble Sort, after each pass:",
+                                options: [
+                                    "The smallest element moves to its correct position",
+                                    "The largest element moves to its correct position",
+                                    "All elements are partially sorted",
+                                    "The array is completely sorted"
+                                ],
+                                correct: 1,
+                                hint: "Bubble Sort 'bubbles up' the largest element in each pass.",
+                                explanation: "In each pass of Bubble Sort, the largest unsorted element 'bubbles up' to its correct position at the end."
+                            }
+                        ]
+                    },
+                    
+                    linkedLists: {
+                        title: "Linked Lists",
+                        description: "Test your knowledge of linked list operations",
+                        icon: "fas fa-link",
+                        color: "#8b5cf6",
+                        difficulty: "intermediate",
+                        questions: [
+                            {
+                                question: "What is the time complexity of inserting at the beginning of a linked list?",
+                                options: [
+                                    "O(1)",
+                                    "O(log n)",
+                                    "O(n)",
+                                    "O(n²)"
+                                ],
+                                correct: 0,
+                                hint: "You only need to update the head pointer.",
+                                explanation: "Inserting at the beginning of a linked list takes O(1) time because you only need to update the head pointer."
+                            },
+                            {
+                                question: "Which operation requires O(n) time in a singly linked list?",
+                                options: [
+                                    "Insert at beginning",
+                                    "Delete from beginning",
+                                    "Access element by index",
+                                    "Update head pointer"
+                                ],
+                                correct: 2,
+                                hint: "Linked lists don't support random access.",
+                                explanation: "Accessing an element by index requires traversing the list from the head, which takes O(n) time in worst case."
+                            },
+                            {
+                                question: "What is the main advantage of linked lists over arrays?",
+                                options: [
+                                    "Faster access by index",
+                                    "Better cache locality",
+                                    "Dynamic size and efficient insertions/deletions",
+                                    "Lower memory overhead"
+                                ],
+                                correct: 2,
+                                hint: "Think about memory allocation and insertions.",
+                                explanation: "Linked lists can grow dynamically and insert/delete elements efficiently without shifting other elements."
+                            },
+                            {
+                                question: "How do you detect a cycle in a linked list?",
+                                options: [
+                                    "Using Floyd's Cycle Detection Algorithm",
+                                    "By checking if head is null",
+                                    "By traversing once and counting nodes",
+                                    "By comparing each node with all others"
+                                ],
+                                correct: 0,
+                                hint: "Also known as the tortoise and hare algorithm.",
+                                explanation: "Floyd's Cycle Detection Algorithm uses two pointers moving at different speeds to detect cycles efficiently."
+                            },
+                            {
+                                question: "What is the space complexity of reversing a linked list?",
+                                options: [
+                                    "O(1)",
+                                    "O(n)",
+                                    "O(log n)",
+                                    "O(n²)"
+                                ],
+                                correct: 0,
+                                hint: "You can reverse a linked list in-place.",
+                                explanation: "A linked list can be reversed in O(1) extra space by rearranging pointers while traversing."
+                            }
+                        ]
+                    },
+                    
+                    trees: {
+                        title: "Trees",
+                        description: "Test your knowledge of tree data structures",
+                        icon: "fas fa-project-diagram",
+                        color: "#f59e0b",
+                        difficulty: "intermediate",
+                        questions: [
+                            {
+                                question: "What is the maximum number of nodes in a binary tree of height h?",
+                                options: [
+                                    "h",
+                                    "2^h - 1",
+                                    "2^h",
+                                    "h^2"
+                                ],
+                                correct: 1,
+                                hint: "Each level can have twice as many nodes as the previous level.",
+                                explanation: "A binary tree of height h can have at most 2^h - 1 nodes (when it's a perfect binary tree)."
+                            },
+                            {
+                                question: "In a Binary Search Tree (BST), all elements in the left subtree are:",
+                                options: [
+                                    "Greater than the root",
+                                    "Less than the root",
+                                    "Equal to the root",
+                                    "Unordered"
+                                ],
+                                correct: 1,
+                                hint: "BST maintains a specific ordering property.",
+                                explanation: "In a BST, all elements in the left subtree are less than the root, and all in the right subtree are greater."
+                            },
+                            {
+                                question: "What is the time complexity of searching in a balanced BST?",
+                                options: [
+                                    "O(1)",
+                                    "O(log n)",
+                                    "O(n)",
+                                    "O(n log n)"
+                                ],
+                                correct: 1,
+                                hint: "BST height affects search time.",
+                                explanation: "In a balanced BST, the height is O(log n), so search takes O(log n) time."
+                            },
+                            {
+                                question: "Which traversal visits root, left subtree, then right subtree?",
+                                options: [
+                                    "Inorder",
+                                    "Preorder",
+                                    "Postorder",
+                                    "Level order"
+                                ],
+                                correct: 1,
+                                hint: "Pre means 'before'.",
+                                explanation: "Preorder traversal visits the root first, then the left subtree, then the right subtree."
+                            },
+                            {
+                                question: "AVL trees maintain:",
+                                options: [
+                                    "Height balance",
+                                    "Color balance",
+                                    "Size balance",
+                                    "Weight balance"
+                                ],
+                                correct: 0,
+                                hint: "AVL trees are self-balancing binary search trees.",
+                                explanation: "AVL trees maintain height balance by ensuring the height difference between left and right subtrees is at most 1."
+                            }
+                        ]
+                    }
+                };
+            }
+            
+            loadTopicCards() {
+                const topicCards = document.getElementById('topicCards');
+                topicCards.innerHTML = '';
+                
+                Object.entries(this.quizzes).forEach(([id, quiz]) => {
+                    const card = this.createTopicCard(id, quiz);
+                    topicCards.appendChild(card);
+                });
+            }
+            
+            createTopicCard(id, quiz) {
+                const card = document.createElement('div');
+                card.className = 'topic-card quiz-topic-card';
+                
+                // Get previous score if exists
+                const scores = this.storage.getQuizScores();
+                const previousScore = scores[id];
+                const scoreText = previousScore ? 
+                    `Previous Score: ${previousScore.percentage}%` : 
+                    'Not attempted yet';
+                
+                card.innerHTML = `
+                    <div class="topic-icon" style="color: ${quiz.color}">
+                        <i class="${quiz.icon}"></i>
+                    </div>
+                    <h3 class="topic-title">${quiz.title}</h3>
+                    <p class="topic-desc">${quiz.description}</p>
+                    
+                    <div class="quiz-meta">
+                        <span class="topic-difficulty difficulty-${quiz.difficulty}">
+                            ${quiz.difficulty.charAt(0).toUpperCase() + quiz.difficulty.slice(1)}
+                        </span>
+                        <span class="quiz-questions">
+                            <i class="fas fa-question"></i> ${quiz.questions.length} Questions
+                        </span>
+                    </div>
+                    
+                    <div class="quiz-score">
+                        ${scoreText}
+                    </div>
+                    
+                    <button class="btn btn-primary start-quiz-btn" data-quiz-id="${id}">
+                        <i class="fas fa-play"></i> Start Quiz
+                    </button>
+                `;
+                
+                // Add event listener to start button
+                card.querySelector('.start-quiz-btn').addEventListener('click', (e) => {
+                    this.startQuiz(id);
+                });
+                
+                return card;
+            }
+            
+            startQuiz(quizId) {
+                this.currentQuiz = this.quizzes[quizId];
+                this.currentQuestionIndex = 0;
+                this.score = 0;
+                this.userAnswers = [];
+                this.quizStarted = true;
+                
+                // Hide selector, show quiz
+                document.querySelector('.quiz-selector').classList.add('hidden');
+                document.getElementById('quizContainer').classList.remove('hidden');
+                
+                // Update quiz info
+                document.getElementById('totalQuestions').textContent = this.currentQuiz.questions.length;
+                
+                // Load first question
+                this.loadQuestion();
+            }
+            
+            loadQuestion() {
+                if (!this.currentQuiz) return;
+                
+                const question = this.currentQuiz.questions[this.currentQuestionIndex];
+                
+                // Update progress
+                document.getElementById('currentQuestion').textContent = this.currentQuestionIndex + 1;
+                document.getElementById('currentScore').textContent = this.score;
+                
+                const progressPercent = ((this.currentQuestionIndex + 1) / this.currentQuiz.questions.length) * 100;
+                document.getElementById('progressFill').style.width = `${progressPercent}%`;
+                
+                // Update question text
+                const questionContainer = document.getElementById('questionContainer');
+                questionContainer.innerHTML = `
+                    <h3>Question ${this.currentQuestionIndex + 1}</h3>
+                    <p>${question.question}</p>
+                `;
+                
+                // Update options
+                const optionsContainer = document.getElementById('optionsContainer');
+                optionsContainer.innerHTML = '';
+                
+                question.options.forEach((option, index) => {
+                    const optionElement = document.createElement('div');
+                    optionElement.className = 'quiz-option';
+                    optionElement.dataset.optionIndex = index;
+                    
+                    optionElement.innerHTML = `
+                        <div class="option-letter">${String.fromCharCode(65 + index)}</div>
+                        <div class="option-text">${option}</div>
+                    `;
+                    
+                    // Check if this option was previously selected
+                    if (this.userAnswers[this.currentQuestionIndex] === index) {
+                        optionElement.classList.add('selected');
+                    }
+                    
+                    optionElement.addEventListener('click', () => {
+                        this.selectOption(index);
+                    });
+                    
+                    optionsContainer.appendChild(optionElement);
+                });
+                
+                // Update navigation buttons
+                document.getElementById('prevBtn').disabled = this.currentQuestionIndex === 0;
+                document.getElementById('explainBtn').disabled = true;
+                
+                // Hide feedback if showing
+                document.getElementById('feedbackContainer').classList.add('hidden');
+                
+                // Update next button text
+                const nextBtn = document.getElementById('nextBtn');
+                if (this.currentQuestionIndex === this.currentQuiz.questions.length - 1) {
+                    nextBtn.innerHTML = 'Finish Quiz <i class="fas fa-flag-checkered"></i>';
+                } else {
+                    nextBtn.innerHTML = 'Next <i class="fas fa-arrow-right"></i>';
+                }
+            }
+            
+            selectOption(optionIndex) {
+                // Clear previous selections
+                document.querySelectorAll('.quiz-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+                
+                // Select new option
+                const selectedOption = document.querySelector(`[data-option-index="${optionIndex}"]`);
+                selectedOption.classList.add('selected');
+                
+                // Store user answer
+                this.userAnswers[this.currentQuestionIndex] = optionIndex;
+                
+                // Enable explanation button
+                document.getElementById('explainBtn').disabled = false;
+            }
+            
+            showHint() {
+                const question = this.currentQuiz.questions[this.currentQuestionIndex];
+                alert(`Hint: ${question.hint}`);
+            }
+            
+            showExplanation() {
+                const question = this.currentQuiz.questions[this.currentQuestionIndex];
+                const userAnswer = this.userAnswers[this.currentQuestionIndex];
+                
+                if (userAnswer === undefined) {
+                    alert('Please select an answer first!');
+                    return;
+                }
+                
+                const isCorrect = userAnswer === question.correct;
+                const feedbackContainer = document.getElementById('feedbackContainer');
+                
+                feedbackContainer.innerHTML = `
+                    <h4>${isCorrect ? '✅ Correct!' : '❌ Incorrect'}</h4>
+                    <p><strong>Explanation:</strong> ${question.explanation}</p>
+                    ${!isCorrect ? `<p><strong>Correct Answer:</strong> ${question.options[question.correct]}</p>` : ''}
+                `;
+                
+                feedbackContainer.classList.remove('hidden');
+                
+                // Scroll to feedback
+                feedbackContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+            
+            prevQuestion() {
+                if (this.currentQuestionIndex > 0) {
+                    this.currentQuestionIndex--;
+                    this.loadQuestion();
+                }
+            }
+            
+            nextQuestion() {
+                // Check if answer is selected
+                if (this.userAnswers[this.currentQuestionIndex] === undefined) {
+                    alert('Please select an answer before proceeding!');
+                    return;
+                }
+                
+                // Check if answer is correct and update score
+                const question = this.currentQuiz.questions[this.currentQuestionIndex];
+                if (this.userAnswers[this.currentQuestionIndex] === question.correct) {
+                    this.score++;
+                }
+                
+                // Move to next question or finish quiz
+                if (this.currentQuestionIndex < this.currentQuiz.questions.length - 1) {
+                    this.currentQuestionIndex++;
+                    this.loadQuestion();
+                } else {
+                    this.finishQuiz();
+                }
+            }
+            
+            finishQuiz() {
+                // Calculate final score
+                const percentage = Math.round((this.score / this.currentQuiz.questions.length) * 100);
+                
+                // Save score to storage
+                const quizId = Object.keys(this.quizzes).find(id => 
+                    this.quizzes[id] === this.currentQuiz
+                );
+                
+                this.storage.saveQuizScore(quizId, this.score, this.currentQuiz.questions.length);
+                
+                // Show results
+                const resultsContainer = document.getElementById('resultsContainer');
+                resultsContainer.innerHTML = `
+                    <div class="results-header">
+                        <h2>🎉 Quiz Completed!</h2>
+                        <p>You scored ${this.score} out of ${this.currentQuiz.questions.length}</p>
+                    </div>
+                    
+                    <div class="results-score">
+                        <div class="score-circle" style="background: conic-gradient(var(--primary-color) ${percentage}%, var(--bg-tertiary) 0);">
+                            <span>${percentage}%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="results-breakdown">
+                        <h3>Question Breakdown</h3>
+                        ${this.currentQuiz.questions.map((question, index) => {
+                            const isCorrect = this.userAnswers[index] === question.correct;
+                            return `
+                                <div class="question-result ${isCorrect ? 'correct' : 'incorrect'}">
+                                    <div class="result-icon">
+                                        ${isCorrect ? '✅' : '❌'}
+                                    </div>
+                                    <div class="result-question">
+                                        <p><strong>Q${index + 1}:</strong> ${question.question}</p>
+                                        <p class="result-answer">
+                                            Your answer: ${question.options[this.userAnswers[index]]}<br>
+                                            ${!isCorrect ? `Correct answer: ${question.options[question.correct]}` : ''}
+                                        </p>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    
+                    <div class="results-actions">
+                        <button class="btn btn-outline" id="retryBtn">
+                            <i class="fas fa-redo"></i> Retry Quiz
+                        </button>
+                        <button class="btn btn-primary" id="backToTopicsBtn">
+                            <i class="fas fa-book"></i> Back to Topics
+                        </button>
+                    </div>
+                `;
+                
+                resultsContainer.classList.remove('hidden');
+                
+                // Scroll to results
+                resultsContainer.scrollIntoView({ behavior: 'smooth' });
+                
+                // Add event listeners to result buttons
+                document.getElementById('retryBtn').addEventListener('click', () => {
+                    this.startQuiz(quizId);
+                    resultsContainer.classList.add('hidden');
+                });
+                
+                document.getElementById('backToTopicsBtn').addEventListener('click', () => {
+                    document.getElementById('quizContainer').classList.add('hidden');
+                    document.querySelector('.quiz-selector').classList.remove('hidden');
+                    resultsContainer.classList.add('hidden');
+                    this.loadTopicCards();
+                });
+            }
+        }
+        
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            window.quizApp = new QuizApp();
+        });
+    </script>
+    
+    <style>
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .quiz-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .quiz-header p {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+        }
+        
+        .quiz-selector h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .topic-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .quiz-topic-card {
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .quiz-topic-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .quiz-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .quiz-questions {
+            font-size: 0.875rem;
+            color: var(--text-tertiary);
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+        
+        .quiz-score {
+            background-color: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .quiz-progress {
+            margin-bottom: 2rem;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: var(--bg-tertiary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .quiz-question {
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .quiz-question h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+        
+        .quiz-question p {
+            font-size: 1.125rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+        
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .quiz-option {
+            display: flex;
+            align-items: flex-start;
+            padding: 1.25rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s;
+            background-color: var(--bg-color);
+        }
+        
+        .quiz-option:hover {
+            border-color: var(--primary-light);
+            background-color: var(--bg-secondary);
+        }
+        
+        .quiz-option.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(37, 99, 235, 0.1);
+        }
+        
+        .option-letter {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .quiz-option.selected .option-letter {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .option-text {
+            flex: 1;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        
+        .quiz-feedback {
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .quiz-feedback h4 {
+            margin-top: 0;
+            margin-bottom: 0.75rem;
+        }
+        
+        .quiz-feedback p {
+            margin-bottom: 0.5rem;
+        }
+        
+        .quiz-feedback p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .quiz-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .navigation-center {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .quiz-results {
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .results-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .results-header h2 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+        
+        .results-score {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            width: 130px;
+            height: 130px;
+            background-color: var(--bg-color);
+            border-radius: 50%;
+        }
+        
+        .score-circle span {
+            position: relative;
+            z-index: 1;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .results-breakdown h3 {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-result {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+            background-color: var(--bg-color);
+        }
+        
+        .question-result.correct {
+            border-left: 4px solid var(--success-color);
+        }
+        
+        .question-result.incorrect {
+            border-left: 4px solid var(--danger-color);
+        }
+        
+        .result-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .result-question p {
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .result-question p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .result-answer {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .results-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .topic-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-navigation {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .navigation-center {
+                order: 1;
+            }
+            
+            .results-actions {
+                flex-direction: column;
+            }
+            
+            .results-actions .btn {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .quiz-question {
+                padding: 1.5rem;
+            }
+            
+            .quiz-option {
+                padding: 1rem;
+            }
+            
+            .option-letter {
+                width: 32px;
+                height: 32px;
+                font-size: 0.875rem;
+            }
+        }
+    </style>
+</body>
+</html>
