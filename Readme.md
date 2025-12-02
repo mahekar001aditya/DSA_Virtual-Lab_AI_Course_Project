@@ -1,11 +1,10 @@
 # DSA Visual Lab 
-
+---
 The DSA Visual Lab provides an interactive platform to learn algorithms through real-time visualizations. ✨
 It includes a control panel for step-by-step execution with complexity analysis and code highlighting. 📊
 Topics are organized clearly so students can explore each data structure easily. 📚
 A built-in code editor allows users to write, modify, and run algorithms directly. 💻
 Quizzes and assessments help learners test their understanding and track progress. 🧠📈
----
 
 ## Detailed Descriptions 🔍
 
