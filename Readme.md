@@ -5,25 +5,6 @@ It includes a control panel for step-by-step execution with complexity analysis 
 Topics are organized clearly so students can explore each data structure easily. 📚
 A built-in code editor allows users to write, modify, and run algorithms directly. 💻
 Quizzes and assessments help learners test their understanding and track progress. 🧠📈
-
-## Table of Images 📋
-
-| **Algorithm Control Panel** 🎮 | **Topics Overview** 📂 |
-|------------------------------|----------------------|
-| ![Control Panel](imgg/2wbt.png) | ![Topics Overview](imgg/3wbt.png) |
-
-| **Homepage** 🏠 | **Code Editor** ✏️ |
-|--------------|-----------------|
-| ![Homepage](imgg/4wbt.png) | ![Code Editor](imgg/5wbt.png) |
-
-| **Assessment/Quiz Interface** 📝 | **Learning Progress Dashboard** 📊 |
-|-------------------------------|----------------------------------|
-| ![Quiz Interface](imgg/6wbt.png) | ![Dashboard](imgg/7wbt.png) |
-
-| **Enhanced Homepage** 🚀 |
-|------------------------|
-| ![Enhanced Homepage](imgg/8wbt.png) |
-
 ---
 
 ## Detailed Descriptions 🔍
@@ -68,6 +49,25 @@ An updated version of the homepage with more detailed progress tracking, showing
 4. **Responsive Design** 📱: Mobile-first CSS approach
 5. **Interactive UI** 🖱️: Event-driven JavaScript components
 6. **Data Management** 🗃️: Client-side state management for user data
+---
+## Table of Images 📋
+
+| **Algorithm Control Panel** 🎮 | **Topics Overview** 📂 |
+|------------------------------|----------------------|
+| ![Control Panel](imgg/2wbt.png) | ![Topics Overview](imgg/3wbt.png) |
+
+| **Homepage** 🏠 | **Code Editor** ✏️ |
+|--------------|-----------------|
+| ![Homepage](imgg/4wbt.png) | ![Code Editor](imgg/5wbt.png) |
+
+| **Assessment/Quiz Interface** 📝 | **Learning Progress Dashboard** 📊 |
+|-------------------------------|----------------------------------|
+| ![Quiz Interface](imgg/6wbt.png) | ![Dashboard](imgg/7wbt.png) |
+
+| **Enhanced Homepage** 🚀 |
+|------------------------|
+| ![Enhanced Homepage](imgg/8wbt.png) |
+
 
 ### Development Approach 🏗️
 - **No External Dependencies** 🧩: Pure HTML/CSS/JavaScript implementation
