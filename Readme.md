@@ -39,7 +39,7 @@ A personalized dashboard showing learning statistics, achievements, recent activ
 An updated version of the homepage with more detailed progress tracking, showing precise timestamps of recent activities and improved user engagement features.
 
 ---
-
+ 
 ## Technology Stack
 
 ### Frontend Technologies
