@@ -4,9 +4,12 @@ Here's a table showing the different screens and features of the DSA Visual Lab 
 
 ## Table of Images
 
-| **Algorithm Control Panel** | **Topics Overview** | **Homepage** | **Code Editor** | **Assessment/Quiz Interface** | **Learning Progress Dashboard** | **Enhanced Homepage** |
-|----------------------------|---------------------|--------------|-----------------|-------------------------------|---------------------------------|------------------------|
-| ![Control Panel](imgg/2wbt.png) | ![Topics Overview](imgg/3wbt.png) | ![Homepage](imgg/4wbt.png) | ![Code Editor](imgg/5wbt.png) | ![Quiz Interface](imgg/6wbt.png) | ![Dashboard](imgg/7wbt.png) | ![Enhanced Homepage](imgg/8wbt.png) |
+| Title | Image | Title | Image |
+|-------|-------|-------|-------|
+| **Algorithm Control Panel** | ![Control Panel](imgg/2wbt.png) | **Topics Overview** | ![Topics Overview](imgg/3wbt.png) |
+| **Homepage** | ![Homepage](imgg/4wbt.png) | **Code Editor** | ![Code Editor](imgg/5wbt.png) |
+| **Assessment/Quiz Interface** | ![Quiz Interface](imgg/6wbt.png) | **Learning Progress Dashboard** | ![Dashboard](imgg/7wbt.png) |
+| **Enhanced Homepage** | ![Enhanced Homepage](imgg/8wbt.png) | | |
 ---
 
 ## Detailed Descriptions
